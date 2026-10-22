@@ -1,0 +1,145 @@
+
+:root {
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, sans-serif;
+  color: #f3f8f5;
+  background: #07110e;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  font-optical-sizing: auto;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse at 50% 15%, #123126 0%, transparent 55%),
+    #07110e;
+}
+
+button,
+a {
+  font: inherit;
+}
+
+.app {
+  width: min(1100px, 100%);
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 0 28px;
+  border-bottom: 1px solid #20352c;
+}
+
+.logo {
+  color: #f3f8f5;
+  text-decoration: none;
+  font-size: 23px;
+  font-weight: 900;
+  letter-spacing: -1px;
+}
+
+.logo span {
+  color: #67e6a5;
+}
+
+.network {
+  padding: 8px 12px;
+  border: 1px solid #326a4e;
+  border-radius: 999px;
+  color: #83edb2;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.hero {
+  width: 100%;
+  max-width: 760px;
+  margin: auto;
+  padding: 100px 0;
+  text-align: center;
+}
+
+.eyebrow {
+  color: #78e8aa;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 3px;
+}
+
+h1 {
+  margin: 22px 0;
+  font-size: clamp(48px, 9vw, 86px);
+  line-height: 1.02;
+  letter-spacing: -4px;
+}
+
+.description {
+  max-width: 520px;
+  margin: 0 auto;
+  color: #a9bbb1;
+  font-size: 17px;
+  line-height: 1.8;
+}
+
+.actions {
+  margin-top: 32px;
+}
+
+.actions button {
+  padding: 14px 22px;
+  border: 1px solid #355044;
+  border-radius: 12px;
+  background: #183025;
+  color: #c6d8ce;
+  font-weight: 700;
+  opacity: 0.8;
+}
+
+.notice {
+  margin-top: 18px;
+  color: #82958a;
+  font-size: 12px;
+}
+
+footer {
+  padding: 24px 0 8px;
+  border-top: 1px solid #20352c;
+  color: #82958a;
+  font-size: 12px;
+  text-align: center;
+}
+
+@media (max-width: 480px) {
+  .app {
+    padding: 18px;
+  }
+
+  .header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .hero {
+    padding: 72px 0;
+  }
+
+  h1 {
+    letter-spacing: -2px;
+  }
+}
