@@ -1,15 +1,82 @@
 
-import React from "react";
+import { useState } from "react";
 import { createRoot } from "react-dom/client";
+import { Connection, PublicKey } from "@solana/web3.js";
 import "./style.css";
 
+type WalletProvider = {
+  publicKey?: PublicKey;
+  isPhantom?: boolean;
+  connect: () => Promise<{ publicKey: PublicKey }>;
+  disconnect?: () => Promise<void>;
+};
+
+declare global {
+  interface Window {
+    solana?: WalletProvider;
+    phantom?: { solana?: WalletProvider };
+  }
+}
+
+const connection = new Connection(
+  "https://api.devnet.solana.com",
+  "confirmed"
+);
+
 function App() {
+  const [wallet, setWallet] = useState("");
+  const [balance, setBalance] = useState<string | null>(null);
+  const [status, setStatus] = useState("Solana Devnet ready");
+  const [busy, setBusy] = useState(false);
+
+  async function connectWallet() {
+    const provider =
+      window.phantom?.solana ??
+      (window.solana?.isPhantom ? window.solana : undefined);
+
+    if (!provider) {
+      setStatus("Open this website in Phantom's in-app browser.");
+      return;
+    }
+
+    try {
+      setBusy(true);
+      setStatus("Connecting wallet...");
+
+      const response = await provider.connect();
+      const address = response.publicKey.toString();
+      const lamports = await connection.getBalance(
+        response.publicKey
+      );
+
+      setWallet(address);
+      setBalance((lamports / 1_000_000_000).toFixed(4));
+      setStatus("Connected to Solana Devnet");
+    } catch (error) {
+      setStatus(
+        error instanceof Error ? error.message : "Connection failed"
+      );
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function disconnectWallet() {
+    const provider = window.phantom?.solana ?? window.solana;
+
+    try {
+      await provider?.disconnect?.();
+    } finally {
+      setWallet("");
+      setBalance(null);
+      setStatus("Wallet disconnected");
+    }
+  }
+
   return (
     <main className="app">
       <header className="header">
-        <a className="logo" href="/">
-          GEMZA<span>.FUN</span>
-        </a>
+        <a className="logo" href="/">GEMZA<span>.FUN</span></a>
         <span className="network">SOLANA DEVNET BETA</span>
       </header>
 
@@ -17,14 +84,32 @@ function App() {
         <p className="eyebrow">YOUR MULTICHAIN TRADING HUB</p>
         <h1>Your Token.<br />Your Launch.</h1>
         <p className="description">
-          Create and launch tokens with GEMZA.FUN.
-          Solana Devnet testing comes first.
+          Build, explore, and test token launches on Solana.
         </p>
+
         <div className="actions">
-          <button disabled>Wallet integration coming next</button>
+          {!wallet ? (
+            <button onClick={connectWallet} disabled={busy}>
+              {busy ? "Connecting..." : "Connect Phantom"}
+            </button>
+          ) : (
+            <button onClick={disconnectWallet}>
+              Disconnect Wallet
+            </button>
+          )}
         </div>
+
+        {wallet && (
+          <div className="wallet-card">
+            <p><strong>Wallet connected</strong></p>
+            <p className="address">{wallet}</p>
+            <p>Devnet balance: {balance ?? "Loading"} SOL</p>
+          </div>
+        )}
+
+        <p className="notice">{status}</p>
         <p className="notice">
-          Development build — no real launches or trades are enabled yet.
+          Test environment only. LaunchLab trading is not enabled yet.
         </p>
       </section>
 
@@ -35,8 +120,4 @@ function App() {
   );
 }
 
-createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+createRoot(document.getElementById("root")!).render(<App />);
