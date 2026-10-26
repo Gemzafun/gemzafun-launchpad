@@ -55,6 +55,15 @@ useEffect(() => {
       const configAccount =
         await connection.getAccountInfo(configPda);
 
+const configOwner =
+  configAccount?.owner.toBase58() ?? "No account";
+
+console.log("Expected program:", programKey.toBase58());
+console.log("Config owner:", configOwner);
+console.log(
+  "Owner matches program:",
+  configOwner === programKey.toBase58()
+);
       if (cancelled) return;
 
       setNetwork("Solana Devnet");
