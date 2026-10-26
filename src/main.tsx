@@ -27,7 +27,8 @@ function App() {
 const [programId, setProgramId] = useState("");
 const [configAddress, setConfigAddress] = useState("");
 const [configExists, setConfigExists] = useState<boolean | null>(null);
-  
+const [configOwner, setConfigOwner] = useState("");
+const [ownerMatches, setOwnerMatches] = useState<boolean | null>(null);
 
 const connection = new Connection(
   "https://api.devnet.solana.com",
