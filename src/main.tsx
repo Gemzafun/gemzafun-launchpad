@@ -87,7 +87,6 @@ useEffect(() => {
     cancelled = true;
   };
 }, []);
-
       const configAccount =
         await connection.getAccountInfo(configPda);
 
