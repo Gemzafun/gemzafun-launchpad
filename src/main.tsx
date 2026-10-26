@@ -185,6 +185,11 @@ console.log(
     Config exists:{" "}
     {configExists === null ? "Checking..." : String(configExists)}
   </p>
+<p>Config owner: {configOwner || "Checking..."}</p>
+<p>
+  Owner matches program:{" "}
+  {ownerMatches === null ? "Checking..." : String(ownerMatches)}
+</p>
 </div>
 
 <p className="notice">{status}</p>
