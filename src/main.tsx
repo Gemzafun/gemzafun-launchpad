@@ -27,14 +27,18 @@ function App() {
 const [programId, setProgramId] = useState("");
 const [configAddress, setConfigAddress] = useState("");
 const [configExists, setConfigExists] = useState<boolean | null>(null);
-
+  
+const connection = new Connection(
+  "https://api.devnet.solana.com",
+  "confirmed"
+);
 
 useEffect(() => {
   let cancelled = false;
 
   async function checkProgram() {
     try {
-      const connection = new Connection(
+
         clusterApiUrl("devnet"),
         "confirmed"
       );
