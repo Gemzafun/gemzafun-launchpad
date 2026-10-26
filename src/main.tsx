@@ -56,16 +56,16 @@ useEffect(() => {
       const configAccount =
         await connection.getAccountInfo(configPda);
 
-const configOwner =
-  configAccount?.owner.toBase58() ?? "No account";
+if (cancelled) return;
 
-console.log("Expected program:", programKey.toBase58());
-console.log("Config owner:", configOwner);
-console.log(
-  "Owner matches program:",
-  configOwner === programKey.toBase58()
+setConfigOwner(
+  configAccount?.owner.toBase58() ?? "No account"
 );
-      if (cancelled) return;
+
+setOwnerMatches(
+  configAccount?.owner.equals(programKey) ?? false
+);
+
 
       setNetwork("Solana Devnet");
       setProgramId(programKey.toBase58());
@@ -184,8 +184,8 @@ console.log(
   <p>
     Config exists:{" "}
     {configExists === null ? "Checking..." : String(configExists)}
-  </p>
-<p>Config owner: {configOwner || "Checking..."}</p>
+  <p>
+      <p>Config owner: {configOwner || "Checking..."}</p>
 <p>
   Owner matches program:{" "}
   {ownerMatches === null ? "Checking..." : String(ownerMatches)}
