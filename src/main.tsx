@@ -2,7 +2,6 @@
 import { useState, useEffect } from "react";
 import { createRoot } from "react-dom/client";
 import { Connection, PublicKey } from "@solana/web3.js";
-import { RAYDIUM_LAUNCHLAB_PROGRAM_ID } from "./launchlabConfig";
 import "./style.css";
 
 type WalletProvider = {
@@ -54,39 +53,6 @@ useEffect(() => {
           programKey
         );
 
-useEffect(() => {
-  let cancelled = false;
-
-  async function checkLaunchLab() {
-    try {
-      const account = await connection.getAccountInfo(
-        RAYDIUM_LAUNCHLAB_PROGRAM_ID
-      );
-
-      if (cancelled) return;
-
-      console.log("LaunchLab Devnet program:", 
-        RAYDIUM_LAUNCHLAB_PROGRAM_ID.toBase58()
-      );
-      console.log("LaunchLab account exists:", 
-        account !== null
-      );
-      console.log("LaunchLab executable:", 
-        account?.executable ?? false
-      );
-    } catch (error) {
-      if (!cancelled) {
-        console.error("LaunchLab check failed:", error);
-      }
-    }
-  }
-
-  checkLaunchLab();
-
-  return () => {
-    cancelled = true;
-  };
-}, []);
       const configAccount =
         await connection.getAccountInfo(configPda);
 
