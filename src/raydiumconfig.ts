@@ -1,12 +1,10 @@
-import { Connection, PublicKey } from "@solana/web3.js";
+import { PublicKey } from "@solana/web3.js";
 import { DEVNET_PROGRAM_ID } from "@raydium-io/raydium-sdk-v2";
 
 export const GEMZA_NETWORK = "devnet" as const;
 
-export const GEMZA_CONNECTION = new Connection(
-  "https://api.devnet.solana.com",
-  "confirmed"
-);
+export const GEMZA_CONNECTION_URL =
+  "https://api.devnet.solana.com";
 
 export const RAYDIUM_LAUNCHLAB_PROGRAM_ID =
   DEVNET_PROGRAM_ID.LAUNCHPAD_PROGRAM;
