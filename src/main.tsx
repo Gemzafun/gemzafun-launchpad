@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createRoot } from "react-dom/client";
 import { Connection, PublicKey } from "@solana/web3.js";
 import "./style.css";
@@ -18,16 +18,136 @@ declare global {
   }
 }
 
-const connection = new Connection(
-  "https://api.devnet.solana.com",
-  "confirmed"
-);
-
 function App() {
   const [wallet, setWallet] = useState("");
   const [balance, setBalance] = useState<string | null>(null);
   const [status, setStatus] = useState("Solana Devnet ready");
   const [busy, setBusy] = useState(false);
+  const [network, setNetwork] = useState("Solana Devnet");
+const [programId, setProgramId] = useState("");
+const [configAddress, setConfigAddress] = useState("");
+const [configExists, setConfigExists] = useState<boolean | null>(null);
+
+
+useEffect(() => {
+  let cancelled = false;
+
+  async function checkProgram() {
+    try {
+      const connection = new Connection(
+        clusterApiUrl("devnet"),
+        "confirmed"
+      );
+
+      const programKey = new PublicKey(
+        "7WaEPvPY8oCvTCQsFWDoXWmp5Xjnt5Ak2Ky8ZYigaPcK"
+      );
+
+      const programAccount =
+        await connection.getAccountInfo(programKey);
+
+      const [configPda] =
+        PublicKey.findProgramAddressSync(
+          [new TextEncoder().encode("gemza-config")],
+          programKey
+        );
+
+      const configAccount =
+        await connection.getAccountInfo(configPda);
+
+      if (cancelled) return;
+
+      setNetwork("Solana Devnet");
+      setProgramId(programKey.toBase58());
+      setConfigAddress(configPda.toBase58());
+      setConfigExists(configAccount !== null);
+
+      if (!programAccount) {
+        setStatus("Program account not found on Devnet");
+      } else if (!programAccount.executable) {
+        setStatus("Account exists but is not executable");
+      } else {
+        setStatus("Executable program found on Devnet");
+      }
+    } catch (error) {
+      if (!cancelled) {
+        setStatus(
+          error instanceof Error
+            ? error.message
+            : "Devnet status check failed"
+        );
+      }
+    }
+  }
+
+  void checkProgram();
+
+  return () => {
+    cancelled = true;
+  };
+}, []);
+
+
+async function checkProgram() {
+  try {
+
+const connection = new Connection(
+  "https://api.devnet.solana.com",
+  "confirmed"
+);
+
+useEffect(() => {
+  let cancelled = false;
+
+  async function checkProgram() {
+    try {
+      const programKey = new PublicKey(
+        "7WaEPvPY8oCvTCQsFWDoXWmp5Xjnt5Ak2Ky8ZYigaPcK"
+      );
+
+      const programAccount =
+        await connection.getAccountInfo(programKey);
+
+      const [configPda] =
+        PublicKey.findProgramAddressSync(
+          [new TextEncoder().encode("gemza-config")],
+          programKey
+        );
+
+      const configAccount =
+        await connection.getAccountInfo(configPda);
+
+      if (cancelled) return;
+
+      setNetwork("Solana Devnet");
+      setProgramId(programKey.toBase58());
+      setConfigAddress(configPda.toBase58());
+      setConfigExists(configAccount !== null);
+
+      if (!programAccount) {
+        setStatus("Program account not found on Devnet");
+      } else if (!programAccount.executable) {
+        setStatus("Account exists but is not executable");
+      } else {
+        setStatus("Executable program found on Devnet");
+      }
+    } catch (error) {
+      if (!cancelled) {
+        setStatus(
+          error instanceof Error
+            ? error.message
+            : "Devnet status check failed"
+        );
+      }
+    }
+  }
+
+  void checkProgram();
+
+  return () => {
+    cancelled = true;
+  };
+}, []);
 
   async function connectWallet() {
     const provider =
@@ -107,7 +227,19 @@ function App() {
           </div>
         )}
 
-        <p className="notice">{status}</p>
+        
+<div className="program-status">
+  <p>Network: {network}</p>
+  <p>Program: {programId || "Checking..."}</p>
+  <p>Config: {configAddress || "Checking..."}</p>
+  <p>
+    Config exists:{" "}
+    {configExists === null ? "Checking..." : String(configExists)}
+  </p>
+</div>
+
+<p className="notice">{status}</p>
+
         <p className="notice">
           Test environment only. LaunchLab trading is not enabled yet.
         </p>
