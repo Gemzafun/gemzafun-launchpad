@@ -177,6 +177,7 @@ setOwnerMatches(
         )}
 
         
+
 <div className="program-status">
   <p>Network: {network}</p>
   <p>Program: {programId || "Checking..."}</p>
@@ -184,13 +185,14 @@ setOwnerMatches(
   <p>
     Config exists:{" "}
     {configExists === null ? "Checking..." : String(configExists)}
+  </p>
+  <p>Config owner: {configOwner || "Checking..."}</p>
   <p>
-      <p>Config owner: {configOwner || "Checking..."}</p>
-<p>
-  Owner matches program:{" "}
-  {ownerMatches === null ? "Checking..." : String(ownerMatches)}
-</p>
+    Owner matches program:{" "}
+    {ownerMatches === null ? "Checking..." : String(ownerMatches)}
+  </p>
 </div>
+
 
 <p className="notice">{status}</p>
 
