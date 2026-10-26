@@ -28,72 +28,6 @@ const [programId, setProgramId] = useState("");
 const [configAddress, setConfigAddress] = useState("");
 const [configExists, setConfigExists] = useState<boolean | null>(null);
   
-const connection = new Connection(
-  "https://api.devnet.solana.com",
-  "confirmed"
-);
-
-useEffect(() => {
-  let cancelled = false;
-
-  async function checkProgram() {
-    try {
-
-        clusterApiUrl("devnet"),
-        "confirmed"
-      );
-
-      const programKey = new PublicKey(
-        "7WaEPvPY8oCvTCQsFWDoXWmp5Xjnt5Ak2Ky8ZYigaPcK"
-      );
-
-      const programAccount =
-        await connection.getAccountInfo(programKey);
-
-      const [configPda] =
-        PublicKey.findProgramAddressSync(
-          [new TextEncoder().encode("gemza-config")],
-          programKey
-        );
-
-      const configAccount =
-        await connection.getAccountInfo(configPda);
-
-      if (cancelled) return;
-
-      setNetwork("Solana Devnet");
-      setProgramId(programKey.toBase58());
-      setConfigAddress(configPda.toBase58());
-      setConfigExists(configAccount !== null);
-
-      if (!programAccount) {
-        setStatus("Program account not found on Devnet");
-      } else if (!programAccount.executable) {
-        setStatus("Account exists but is not executable");
-      } else {
-        setStatus("Executable program found on Devnet");
-      }
-    } catch (error) {
-      if (!cancelled) {
-        setStatus(
-          error instanceof Error
-            ? error.message
-            : "Devnet status check failed"
-        );
-      }
-    }
-  }
-
-  void checkProgram();
-
-  return () => {
-    cancelled = true;
-  };
-}, []);
-
-
-async function checkProgram() {
-  try {
 
 const connection = new Connection(
   "https://api.devnet.solana.com",
@@ -152,6 +86,7 @@ useEffect(() => {
     cancelled = true;
   };
 }, []);
+
 
   async function connectWallet() {
     const provider =
