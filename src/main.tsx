@@ -19,7 +19,10 @@ declare global {
   }
 }
 
-function App() {
+function App() {console.log(
+  "Raydium LaunchLab Devnet:",
+  DEVNET_PROGRAM_ID.LAUNCHPAD_PROGRAM.toBase58()
+);
   const [wallet, setWallet] = useState("");
   const [balance, setBalance] = useState<string | null>(null);
   const [status, setStatus] = useState("Solana Devnet ready");
