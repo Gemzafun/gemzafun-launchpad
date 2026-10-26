@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { createRoot } from "react-dom/client";
 import { Connection, PublicKey } from "@solana/web3.js";
-import { RAYDIUM_LAUNCHLAB_PROGRAM_ID } from "./raydiumConfig";
+import { RAYDIUM_LAUNCHLAB_PROGRAM_ID } from "./raydiumConfig.ts";
 import "./style.css";
 
 type WalletProvider = {
