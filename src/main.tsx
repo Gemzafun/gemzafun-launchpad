@@ -28,6 +28,8 @@ function App() {console.log(
   const [status, setStatus] = useState("Solana Devnet ready");
   const [busy, setBusy] = useState(false);
   const [network, setNetwork] = useState("Solana Devnet");
+const launchLabProgramId =
+  DEVNET_PROGRAM_ID.LAUNCHPAD_PROGRAM.toBase58();
 const [programId, setProgramId] = useState("");
 const [configAddress, setConfigAddress] = useState("");
 const [configExists, setConfigExists] = useState<boolean | null>(null);
@@ -151,6 +153,9 @@ setOwnerMatches(
       <header className="header">
         <a className="logo" href="/">GEMZA<span>.FUN</span></a>
         <span className="network">SOLANA DEVNET BETA</span>
+<span className="network">
+  Raydium LaunchLab: {launchLabProgramId}
+</span>
       </header>
 
       <section className="hero">
