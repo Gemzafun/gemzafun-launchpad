@@ -153,9 +153,7 @@ setOwnerMatches(
       <header className="header">
         <a className="logo" href="/">GEMZA<span>.FUN</span></a>
         <span className="network">SOLANA DEVNET BETA</span>
-<span className="network">
-  Raydium LaunchLab: {launchLabProgramId}
-</span>
+
       </header>
 
       <section className="hero">
