@@ -19,17 +19,20 @@ declare global {
   }
 }
 
-function App() {console.log(
-  "Raydium LaunchLab Devnet:",
-  DEVNET_PROGRAM_ID.LAUNCHPAD_PROGRAM.toBase58()
-);
+function App() {
+  console.log(
+    "Raydium LaunchLab Devnet:",
+    DEVNET_PROGRAM_ID?.LAUNCHPAD_PROGRAM?.toBase58?.()
+      ?? "LaunchLab program ID unavailable"
+  );
   const [wallet, setWallet] = useState("");
   const [balance, setBalance] = useState<string | null>(null);
   const [status, setStatus] = useState("Solana Devnet ready");
   const [busy, setBusy] = useState(false);
   const [network, setNetwork] = useState("Solana Devnet");
 const launchLabProgramId =
-  DEVNET_PROGRAM_ID.LAUNCHPAD_PROGRAM.toBase58();
+  DEVNET_PROGRAM_ID?.LAUNCHPAD_PROGRAM?.toBase58?.()
+  ?? "LaunchLab program ID unavailable";
 const [programId, setProgramId] = useState("");
 const [configAddress, setConfigAddress] = useState("");
 const [configExists, setConfigExists] = useState<boolean | null>(null);
