@@ -1,4 +1,4 @@
-
+console.log("GEMZA main.tsx loaded");
 import { useState, useEffect } from "react";
 import { createRoot } from "react-dom/client";
 import { Connection, PublicKey } from "@solana/web3.js";
