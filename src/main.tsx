@@ -1,4 +1,6 @@
 console.log("GEMZA main.tsx loaded");
+import { Buffer } from "buffer";
+(globalThis as any).Buffer = Buffer;
 import { useState, useEffect } from "react";
 import { createRoot } from "react-dom/client";
 import { checkLaunchLabDevnet } from "./Launchlab";
