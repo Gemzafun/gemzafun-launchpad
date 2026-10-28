@@ -4,7 +4,11 @@ import { createRoot } from "react-dom/client";
 import { checkLaunchLabDevnet } from "./launchlab.ts";
 import { Connection, PublicKey } from "@solana/web3.js";
 import { DEVNET_PROGRAM_ID } from "@raydium-io/raydium-sdk-v2";
+import { Buffer } from "buffer";
 import "./style.css";
+
+(globalThis as typeof globalThis & { Buffer: typeof Buffer }).Buffer =
+  Buffer;
 
 type WalletProvider = {
   publicKey?: PublicKey;
