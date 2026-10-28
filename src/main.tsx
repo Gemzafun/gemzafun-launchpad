@@ -1,16 +1,15 @@
+
 console.log("GEMZA main.tsx loaded");
+
 import { Buffer } from "buffer";
 (globalThis as any).Buffer = Buffer;
+
 import { useState, useEffect } from "react";
 import { createRoot } from "react-dom/client";
 import { checkLaunchLabDevnet } from "./Launchlab";
 import { Connection, PublicKey } from "@solana/web3.js";
 import { DEVNET_PROGRAM_ID } from "@raydium-io/raydium-sdk-v2";
-import { Buffer } from "buffer";
 import "./style.css";
-
-(globalThis as typeof globalThis & { Buffer: typeof Buffer }).Buffer =
-  Buffer;
 
 type WalletProvider = {
   publicKey?: PublicKey;
