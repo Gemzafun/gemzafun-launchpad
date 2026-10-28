@@ -12,7 +12,24 @@
     <title>GEMZA.FUN — Your Token. Your Launch.</title>
   </head>
   <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    
+<div id="root"></div>
+
+<pre id="gemza-debug" style="color:#ff7777;background:#171717;padding:12px;white-space:pre-wrap;"></pre>
+
+<script>
+window.addEventListener("error", function(event) {
+  document.getElementById("gemza-debug").textContent =
+    "JavaScript error: " + event.message;
+});
+
+window.addEventListener("unhandledrejection", function(event) {
+  document.getElementById("gemza-debug").textContent =
+    "Promise error: " + String(event.reason);
+});
+</script>
+
+<script type="module" src="/src/main.tsx"></script>
+
   </body>
 </html>
