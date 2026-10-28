@@ -1,7 +1,7 @@
 console.log("GEMZA main.tsx loaded");
 import { useState, useEffect } from "react";
 import { createRoot } from "react-dom/client";
-import { checkLaunchLabDevnet } from "./launchlab.ts";
+import { checkLaunchLabDevnet } from "./launchlab";
 import { Connection, PublicKey } from "@solana/web3.js";
 import { DEVNET_PROGRAM_ID } from "@raydium-io/raydium-sdk-v2";
 import { Buffer } from "buffer";
