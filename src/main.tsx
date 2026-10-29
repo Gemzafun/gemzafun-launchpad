@@ -174,26 +174,25 @@ async function connectWallet() {
           Build, explore, and test token launches on Solana.
         </p>
 
-        <div className="actions">
-          {!wallet ? (
-            
-<button
-  onClick={() => {
-    console.log("Phantom button clicked");
-    setStatus("Button clicked — checking Phantom...");
-    void connectWallet();
-  }}
-  disabled={busy}
->
+        
+<div className="actions">
+  <button
+    type="button"
+    onClick={() => {
+      alert("GEMZA button click works");
+      setStatus("Button click detected");
+    }}
+    style={{
+      cursor: "pointer",
+      pointerEvents: "auto",
+      position: "relative",
+      zIndex: 10,
+    }}
+  >
+    Connect Phantom
+  </button>
+</div>
 
-              {busy ? "Connecting..." : "Connect Phantom"}
-            </button>
-          ) : (
-            <button onClick={disconnectWallet}>
-              Disconnect Wallet
-            </button>
-          )}
-        </div>
 
         {wallet && (
           <div className="wallet-card">
