@@ -1,6 +1,6 @@
 
 console.log("GEMZA main.tsx loaded");
-
+import "./polyfills";
 import { useState, useEffect } from "react";
 import { createRoot } from "react-dom/client";
 import { checkLaunchLabDevnet } from "./Launchlab";
