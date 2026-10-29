@@ -6,6 +6,7 @@ import { createRoot } from "react-dom/client";
 import {
   checkLaunchLabDevnet,
   checkGemzaMetadata,
+  checkGemzaMintAuthority,
 } from "./Launchlab";
 import { Connection, PublicKey } from "@solana/web3.js";
 import { DEVNET_PROGRAM_ID } from "@raydium-io/raydium-sdk-v2";
@@ -50,6 +51,8 @@ const [configAddress, setConfigAddress] = useState("");
 const [configExists, setConfigExists] = useState<boolean | null>(null);
 const [configOwner, setConfigOwner] = useState("");
 const [ownerMatches, setOwnerMatches] = useState<boolean | null>(null);
+const [mintAuthorityStatus, setMintAuthorityStatus] =
+  useState("Not checked");
 const [metadataStatus, setMetadataStatus] = useState("Not checked");
 
 const connection = new Connection(
@@ -150,6 +153,36 @@ useEffect(() => {
   }
 
   void runMetadataCheck();
+
+  return () => {
+    cancelled = true;
+  };
+}, []);
+
+useEffect(() => {
+  let cancelled = false;
+
+  async function checkAuthority() {
+    try {
+      const result = await checkGemzaMintAuthority();
+
+      if (cancelled) return;
+
+      setMintAuthorityStatus(
+        result.mintAuthority ?? "No mint authority"
+      );
+
+      console.log("GEMZA mint authority:", result);
+    } catch (error) {
+      if (cancelled) return;
+
+      setMintAuthorityStatus(
+        error instanceof Error ? error.message : "Check failed"
+      );
+    }
+  }
+
+  void checkAuthority();
 
   return () => {
     cancelled = true;
