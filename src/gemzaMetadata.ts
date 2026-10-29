@@ -28,6 +28,14 @@ export async function prepareGemzaMetadataTransaction(
 ): Promise<Transaction> {
   const mintInfo = await connection.getAccountInfo(GEMZA_MINT);
 
+const mintState = await getMint(connection, GEMZA_MINT);
+
+if (!mintState.mintAuthority?.equals(wallet)) {
+  throw new Error(
+    "Connected wallet is not the current GEMZA mint authority."
+  );
+}
+
   if (!mintInfo) {
     throw new Error("GEMZA mint was not found on this network.");
   }
