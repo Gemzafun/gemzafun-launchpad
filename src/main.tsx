@@ -365,6 +365,10 @@ async function connectWallet() {
     {ownerMatches === null ? "Checking..." : String(ownerMatches)}
   </p>
 </div>
+<div className="program-status">
+  <p>GEMZA Token Metadata</p>
+  <p>{metadataStatus}</p>
+</div>
 
 
 <p className="notice">{status}</p>
