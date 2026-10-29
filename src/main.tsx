@@ -110,37 +110,43 @@ setOwnerMatches(
 }, []);
 
 
-  async function connectWallet() {
+  
+async function connectWallet() {
+  setBusy(true);
+
+  try {
     const provider =
       window.phantom?.solana ??
       (window.solana?.isPhantom ? window.solana : undefined);
 
     if (!provider) {
-      setStatus("Open this website in Phantom's in-app browser.");
+      setStatus(
+        "Phantom not detected. Open GEMZA.FUN directly inside the Phantom app browser."
+      );
       return;
     }
 
-    try {
-      setBusy(true);
-      setStatus("Connecting wallet...");
+    setStatus("Connecting to Phantom...");
 
-      const response = await provider.connect();
-      const address = response.publicKey.toString();
-      const lamports = await connection.getBalance(
-        response.publicKey
-      );
+    const response = await provider.connect();
+    const address = response.publicKey.toString();
 
-      setWallet(address);
-      setBalance((lamports / 1_000_000_000).toFixed(4));
-      setStatus("Connected to Solana Devnet");
-    } catch (error) {
-      setStatus(
-        error instanceof Error ? error.message : "Connection failed"
-      );
-    } finally {
-      setBusy(false);
-    }
+    const lamports = await connection.getBalance(response.publicKey);
+
+    setWallet(address);
+    setBalance((lamports / 1_000_000_000).toFixed(4));
+    setStatus("Connected to Solana Devnet");
+  } catch (error) {
+    setStatus(
+      error instanceof Error
+        ? `Wallet connection failed: ${error.message}`
+        : "Wallet connection failed"
+    );
+  } finally {
+    setBusy(false);
   }
+}
+
 
   async function disconnectWallet() {
     const provider = window.phantom?.solana ?? window.solana;
