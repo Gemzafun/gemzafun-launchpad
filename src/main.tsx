@@ -16,6 +16,8 @@ type WalletProvider = {
   isPhantom?: boolean;
   connect: () => Promise<{ publicKey: PublicKey }>;
   disconnect?: () => Promise<void>;
+  signTransaction?: (transaction: any) => Promise<any>;
+  signAllTransactions?: (transactions: any[]) => Promise<any[]>;
 };
 
 declare global {
