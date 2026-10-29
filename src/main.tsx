@@ -123,9 +123,11 @@ useEffect(() => {
       console.log("LaunchLab Devnet check:", result);
 
       setStatus(
-        "LaunchLab program found. Config: " +
-        result.configAddress
-      );
+  "LaunchLab verified. Config: " +
+  result.configAddress +
+  " | Quote mint: " +
+  result.quoteMint
+);
     } catch (error) {
       if (cancelled) return;
 
