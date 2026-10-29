@@ -117,6 +117,44 @@ setOwnerMatches(
   };
 }, []);
 
+
+useEffect(() => {
+  let cancelled = false;
+
+  async function runMetadataCheck() {
+    try {
+      setMetadataStatus("Checking GEMZA metadata...");
+
+      const result = await checkGemzaMetadata();
+
+      if (cancelled) return;
+
+      setMetadataStatus(
+        result.metadataExists
+          ? "Metadata account exists. Owner: " + result.metadataOwner
+          : "No Metaplex metadata account found for this mint."
+      );
+
+      console.log("GEMZA metadata check:", result);
+    } catch (error) {
+      if (cancelled) return;
+
+      setMetadataStatus(
+        error instanceof Error
+          ? "Metadata check failed: " + error.message
+          : "Metadata check failed."
+      );
+    }
+  }
+
+  void runMetadataCheck();
+
+  return () => {
+    cancelled = true;
+  };
+}, []);
+
+
 useEffect(() => {
   let cancelled = false;
 
