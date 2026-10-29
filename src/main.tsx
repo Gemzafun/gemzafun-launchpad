@@ -175,23 +175,26 @@ async function connectWallet() {
         </p>
 
         
+
 <div className="actions">
-  <button
-    type="button"
-    onClick={() => {
-      alert("GEMZA button click works");
-      setStatus("Button click detected");
-    }}
-    style={{
-      cursor: "pointer",
-      pointerEvents: "auto",
-      position: "relative",
-      zIndex: 10,
-    }}
-  >
-    Connect Phantom
-  </button>
+  {!wallet ? (
+    <button
+      type="button"
+      disabled={busy}
+      onClick={connectWallet}
+    >
+      {busy ? "Connecting..." : "Connect Phantom"}
+    </button>
+  ) : (
+    <button
+      type="button"
+      onClick={disconnectWallet}
+    >
+      Disconnect Wallet
+    </button>
+  )}
 </div>
+
 
 
         {wallet && (
