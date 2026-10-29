@@ -403,6 +403,7 @@ async function connectWallet() {
 <div className="program-status">
   <p>GEMZA Token Metadata</p>
   <p>{metadataStatus}</p>
+<p>Mint authority: {mintAuthorityStatus}</p>
 </div>
 
 
