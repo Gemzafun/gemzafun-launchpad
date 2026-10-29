@@ -10,6 +10,7 @@ import {
 } from "./Launchlab";
 import { Connection, PublicKey } from "@solana/web3.js";
 import { DEVNET_PROGRAM_ID } from "@raydium-io/raydium-sdk-v2";
+import { prepareGemzaMetadataTransaction } from "./gemzaMetadata";
 import "./style.css";
 
 type WalletProvider = {
@@ -267,6 +268,60 @@ async function connectWallet() {
 }
 
 
+async function addGemzaMetadata() {
+  if (!wallet) {
+    setStatus("Connect your Phantom wallet first.");
+    return;
+  }
+
+  const provider =
+    window.phantom?.solana ??
+    (window.solana?.isPhantom ? window.solana : undefined);
+
+  if (!provider?.signTransaction) {
+    setStatus("Phantom transaction signing is unavailable.");
+    return;
+  }
+
+  setBusy(true);
+
+  try {
+    const walletKey = new PublicKey(wallet);
+
+    setStatus("Preparing GEMZA metadata transaction...");
+
+    const transaction = await prepareGemzaMetadataTransaction(
+      connection,
+      walletKey
+    );
+
+    setStatus("Review the metadata transaction in Phantom.");
+
+    const signedTransaction =
+      await provider.signTransaction(transaction);
+
+    const signature = await connection.sendRawTransaction(
+      signedTransaction.serialize()
+    );
+
+    setStatus("Transaction submitted. Waiting for confirmation...");
+
+    await connection.confirmTransaction(signature, "confirmed");
+
+    setMetadataStatus("Metadata transaction confirmed.");
+    setStatus("GEMZA metadata created on Devnet. Signature: " + signature);
+  } catch (error) {
+    setStatus(
+      error instanceof Error
+        ? "Metadata transaction failed: " + error.message
+        : "Metadata transaction failed."
+    );
+  } finally {
+    setBusy(false);
+  }
+}
+
+
   async function disconnectWallet() {
     const provider = window.phantom?.solana ?? window.solana;
 
@@ -404,6 +459,13 @@ async function connectWallet() {
   <p>GEMZA Token Metadata</p>
   <p>{metadataStatus}</p>
 <p>Mint authority: {mintAuthorityStatus}</p>
+<button
+  type="button"
+  disabled={busy || !wallet}
+  onClick={addGemzaMetadata}
+>
+  {busy ? "Processing..." : "Add GEMZA Metadata"}
+</button>
 </div>
 
 
