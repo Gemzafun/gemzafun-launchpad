@@ -176,7 +176,16 @@ async function connectWallet() {
 
         <div className="actions">
           {!wallet ? (
-            <button onClick={connectWallet} disabled={busy}>
+            
+<button
+  onClick={() => {
+    console.log("Phantom button clicked");
+    setStatus("Button clicked — checking Phantom...");
+    void connectWallet();
+  }}
+  disabled={busy}
+>
+
               {busy ? "Connecting..." : "Connect Phantom"}
             </button>
           ) : (
