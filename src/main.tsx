@@ -225,35 +225,44 @@ async function connectWallet() {
 
   <label htmlFor="token-name">Token name</label>
   <input
-    id="token-name"
-    type="text"
-    placeholder="e.g. Gemza Token"
-    maxLength={32}
-  />
+  id="token-name"
+  type="text"
+  placeholder="e.g. Gemza Token"
+  maxLength={32}
+  value={tokenName}
+  onChange={(e) => setTokenName(e.target.value)}
+/>
 
   <label htmlFor="token-symbol">Token symbol</label>
   <input
-    id="token-symbol"
-    type="text"
-    placeholder="e.g. GEMZA"
-    maxLength={10}
-  />
+  id="token-symbol"
+  type="text"
+  placeholder="e.g. GEMZA"
+  maxLength={10}
+  value={tokenSymbol}
+  onChange={(e) =>
+    setTokenSymbol(e.target.value.toUpperCase())
+  }
+/>
 
   <label htmlFor="token-image">Token image URL</label>
   <input
-    id="token-image"
-    type="url"
-    placeholder="https://example.com/token.png"
-  />
+  id="token-image"
+  type="url"
+  placeholder="https://example.com/token.png"
+  value={tokenImage}
+  onChange={(e) => setTokenImage(e.target.value)}
+/>
 
   <label htmlFor="token-supply">Total supply</label>
   <input
-    id="token-supply"
-    type="number"
-    min="1"
-    step="1"
-    defaultValue="1000000000"
-  />
+  id="token-supply"
+  type="number"
+  min="1"
+  step="1"
+  value={tokenSupply}
+  onChange={(e) => setTokenSupply(e.target.value)}
+/>
 
   <button
     type="button"
