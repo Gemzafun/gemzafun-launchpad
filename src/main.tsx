@@ -48,6 +48,7 @@ const [configAddress, setConfigAddress] = useState("");
 const [configExists, setConfigExists] = useState<boolean | null>(null);
 const [configOwner, setConfigOwner] = useState("");
 const [ownerMatches, setOwnerMatches] = useState<boolean | null>(null);
+const [metadataStatus, setMetadataStatus] = useState("Not checked");
 
 const connection = new Connection(
   "https://api.devnet.solana.com",
