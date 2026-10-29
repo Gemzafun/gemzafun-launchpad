@@ -213,6 +213,56 @@ async function connectWallet() {
           Build, explore, and test token launches on Solana.
         </p>
 
+
+
+<div className="launch-card">
+  <h2>Create a Token</h2>
+  <p>Prepare your token launch on Solana Devnet.</p>
+
+  <label htmlFor="token-name">Token name</label>
+  <input
+    id="token-name"
+    type="text"
+    placeholder="e.g. Gemza Token"
+    maxLength={32}
+  />
+
+  <label htmlFor="token-symbol">Token symbol</label>
+  <input
+    id="token-symbol"
+    type="text"
+    placeholder="e.g. GEMZA"
+    maxLength={10}
+  />
+
+  <label htmlFor="token-image">Token image URL</label>
+  <input
+    id="token-image"
+    type="url"
+    placeholder="https://example.com/token.png"
+  />
+
+  <label htmlFor="token-supply">Total supply</label>
+  <input
+    id="token-supply"
+    type="number"
+    min="1"
+    step="1"
+    defaultValue="1000000000"
+  />
+
+  <button
+    type="button"
+    onClick={() =>
+      setStatus(
+        "Token form added. Launch transactions are not enabled yet."
+      )
+    }
+  >
+    Prepare Token Launch
+  </button>
+</div>
+
         
 
 <div className="actions">
