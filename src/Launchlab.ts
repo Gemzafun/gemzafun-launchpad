@@ -11,7 +11,7 @@ import {
   LaunchpadConfig,
 } from "@raydium-io/raydium-sdk-v2";
 
-import { NATIVE_MINT } from "@solana/spl-token";
+import { NATIVE_MINT, getMint } from "@solana/spl-token";
 
 const connection = new Connection(
   clusterApiUrl("devnet"),
@@ -82,5 +82,18 @@ export async function checkGemzaMetadata() {
     metadataAddress: metadataPda.toBase58(),
     metadataExists: metadataInfo !== null,
     metadataOwner: metadataInfo?.owner.toBase58() ?? "No metadata account",
+  };
+}
+
+export async function checkGemzaMintAuthority() {
+  const mint = new PublicKey(
+    "BXFE79KMMf2RtCLqbVLGkjBkVZipnT6H4A2qs9mMiYnF"
+  );
+
+  const mintInfo = await getMint(connection, mint);
+
+  return {
+    mint: mint.toBase58(),
+    mintAuthority: mintInfo.mintAuthority?.toBase58() ?? null,
   };
 }
