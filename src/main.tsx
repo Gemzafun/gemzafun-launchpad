@@ -3,7 +3,10 @@ console.log("GEMZA main.tsx loaded");
 import "./polyfills";
 import { useState, useEffect } from "react";
 import { createRoot } from "react-dom/client";
-import { checkLaunchLabDevnet } from "./Launchlab";
+import {
+  checkLaunchLabDevnet,
+  checkGemzaMetadata,
+} from "./Launchlab";
 import { Connection, PublicKey } from "@solana/web3.js";
 import { DEVNET_PROGRAM_ID } from "@raydium-io/raydium-sdk-v2";
 import "./style.css";
