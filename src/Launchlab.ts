@@ -51,7 +51,6 @@ export async function checkLaunchLabDevnet() {
   };
 }
 
-
 export async function checkGemzaMetadata() {
   const mint = new PublicKey(
     "BXFE79KMMf2RtCLqbVLGkjBkVZipnT6H4A2qs9mMiYnF"
