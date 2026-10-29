@@ -11,6 +11,9 @@
   },
   "dependencies": {
     "@metaplex-foundation/mpl-token-metadata": "^3.4.0",
+    "@metaplex-foundation/umi": "^1.6.0",
+    "@metaplex-foundation/umi-bundle-defaults": "^1.6.0",
+  "@metaplex-foundation/umi-signer-wallet-adapters": "^1.6.0",
     "@raydium-io/raydium-sdk-v2": "0.2.64-alpha",
     "@solana/spl-token": "latest",
     "@solana/web3.js": "^1.98.4",
