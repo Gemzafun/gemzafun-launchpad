@@ -32,6 +32,10 @@ function App() {
   const [balance, setBalance] = useState<string | null>(null);
   const [status, setStatus] = useState("Solana Devnet ready");
   const [busy, setBusy] = useState(false);
+const [tokenName, setTokenName] = useState("");
+const [tokenSymbol, setTokenSymbol] = useState("");
+const [tokenImage, setTokenImage] = useState("");
+const [tokenSupply, setTokenSupply] = useState("1000000000");
   const [network, setNetwork] = useState("Solana Devnet");
 const launchLabProgramId =
   DEVNET_PROGRAM_ID?.LAUNCHPAD_PROGRAM?.toBase58?.()
