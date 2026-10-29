@@ -109,6 +109,43 @@ setOwnerMatches(
   };
 }, []);
 
+useEffect(() => {
+  let cancelled = false;
+
+  async function checkLaunchLab() {
+    try {
+      setStatus("Checking Raydium LaunchLab on Devnet...");
+
+      const result = await checkLaunchLabDevnet();
+
+      if (cancelled) return;
+
+      console.log("LaunchLab Devnet check:", result);
+
+      setStatus(
+        "LaunchLab program found. Config: " +
+        result.configAddress
+      );
+    } catch (error) {
+      if (cancelled) return;
+
+      console.error("LaunchLab check failed:", error);
+
+      setStatus(
+        error instanceof Error
+          ? "LaunchLab check failed: " + error.message
+          : "LaunchLab check failed"
+      );
+    }
+  }
+
+  void checkLaunchLab();
+
+  return () => {
+    cancelled = true;
+  };
+}, []);
+
 
 async function connectWallet() {
   setBusy(true);
