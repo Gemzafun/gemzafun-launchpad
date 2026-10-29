@@ -50,3 +50,38 @@ export async function checkLaunchLabDevnet() {
     quoteMint: new PublicKey(config.mintB).toBase58(),
   };
 }
+
+
+export async function checkGemzaMetadata() {
+  const mint = new PublicKey(
+    "BXFE79KMMf2RtCLqbVLGkjBkVZipnT6H4A2qs9mMiYnF"
+  );
+
+  const mintInfo = await connection.getAccountInfo(mint);
+
+  if (!mintInfo) {
+    throw new Error("GEMZA mint not found on Devnet.");
+  }
+
+  const [metadataPda] = PublicKey.findProgramAddressSync(
+    [
+      new TextEncoder().encode("metadata"),
+      new PublicKey(
+        "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
+      ).toBytes(),
+      mint.toBytes(),
+    ],
+    new PublicKey(
+      "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
+    )
+  );
+
+  const metadataInfo = await connection.getAccountInfo(metadataPda);
+
+  return {
+    mint: mint.toBase58(),
+    metadataAddress: metadataPda.toBase58(),
+    metadataExists: metadataInfo !== null,
+    metadataOwner: metadataInfo?.owner.toBase58() ?? "No metadata account",
+  };
+}
