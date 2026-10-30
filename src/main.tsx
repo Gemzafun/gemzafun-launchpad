@@ -404,13 +404,6 @@ async function connectWallet() {
   <p>GEMZA Token Metadata</p>
   <p>{metadataStatus}</p>
 <p>Mint authority: {mintAuthorityStatus}</p>
-<button
-  type="button"
-  disabled={busy || !wallet}
-  onClick={addGemzaMetadata}
->
-  {busy ? "Processing..." : "Add GEMZA Metadata"}
-</button>
 </div>
 
 
