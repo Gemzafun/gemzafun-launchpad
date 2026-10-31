@@ -27,3 +27,25 @@ export const GEMZA_LAUNCH_CONFIG = {
   curveType: 0,
   defaultCurveAllocationPercent: 51,
 };
+
+export async function readLaunchConfig() {
+  const programId = DEVNET_PROGRAM_ID.LAUNCHPAD_PROGRAM;
+
+  const configId = getPdaLaunchpadConfigId(
+    programId,
+    NATIVE_MINT,
+    0,
+    0
+  ).publicKey;
+
+  const account = await launchConnection.getAccountInfo(configId);
+
+  if (!account) {
+    throw new Error("Raydium LaunchLab config not found on Devnet.");
+  }
+
+  return {
+    configId,
+    config: LaunchpadConfig.decode(account.data),
+  };
+}
