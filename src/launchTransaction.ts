@@ -15,3 +15,15 @@ import {
 
 import { NATIVE_MINT } from "@solana/spl-token";
 import BN from "bn.js";
+
+export const launchConnection = new Connection(
+  "https://api.devnet.solana.com",
+  "confirmed"
+);
+
+export const GEMZA_LAUNCH_CONFIG = {
+  network: "devnet",
+  quoteMint: NATIVE_MINT,
+  curveType: 0,
+  defaultCurveAllocationPercent: 51,
+};
