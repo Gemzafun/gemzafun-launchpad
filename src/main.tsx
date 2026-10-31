@@ -37,6 +37,7 @@ function App() {
   const [wallet, setWallet] = useState("");
   const [balance, setBalance] = useState<string | null>(null);
   const [status, setStatus] = useState("Solana Devnet ready");
+const [launchLabStatus, setLaunchLabStatus] = useState("Checking Raydium LaunchLab...");
   const [busy, setBusy] = useState(false);
 const [tokenName, setTokenName] = useState("");
 const [tokenSymbol, setTokenSymbol] = useState("");
