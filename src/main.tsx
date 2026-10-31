@@ -299,6 +299,11 @@ async function connectWallet() {
 
     const response = await provider.connect();
     const address = response.publicKey.toString();
+if (!provider.signAllTransactions) {
+  throw new Error(
+    "Your Phantom wallet does not support transaction batch signing."
+  );
+}
 
     const lamports = await connection.getBalance(response.publicKey);
 
