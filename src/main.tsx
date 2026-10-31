@@ -54,6 +54,16 @@ const [ownerMatches, setOwnerMatches] = useState<boolean | null>(null);
 const [mintAuthorityStatus, setMintAuthorityStatus] =
   useState("Not checked");
 const [metadataStatus, setMetadataStatus] = useState("Not checked");
+const [hostedMetadata, setHostedMetadata] = useState<{
+  name?: string;
+  symbol?: string;
+  description?: string;
+  image?: string;
+} | null>(null);
+
+const [hostedMetadataStatus, setHostedMetadataStatus] = useState(
+  "Loading hosted metadata..."
+);
 
 const connection = new Connection(
   "https://api.devnet.solana.com",
