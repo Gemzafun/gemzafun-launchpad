@@ -481,6 +481,10 @@ async function connectWallet() {
 
 
 <p className="notice">{status}</p>
+<div className="program-status">
+  <h3>Raydium LaunchLab Configuration</h3>
+  <p>{status}</p>
+</div>
 
         <p className="notice">
           Test environment only. LaunchLab trading is not enabled yet.
