@@ -172,6 +172,39 @@ useEffect(() => {
 useEffect(() => {
   let cancelled = false;
 
+  async function loadHostedMetadata() {
+    try {
+      const response = await fetch(
+        "https://raw.githubusercontent.com/Gemzafun/gemzafun-launchpad/main/gemza-token-metadata.json"
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (!cancelled) {
+        setHostedMetadata(data);
+        setHostedMetadataStatus("Hosted metadata loaded (website display only).");
+      }
+    } catch (error) {
+      if (!cancelled) {
+        setHostedMetadataStatus("Could not load hosted metadata.");
+      }
+    }
+  }
+
+  void loadHostedMetadata();
+
+  return () => {
+    cancelled = true;
+  };
+}, []);
+
+useEffect(() => {
+  let cancelled = false;
+
   async function checkAuthority() {
     try {
       const result = await checkGemzaMintAuthority();
