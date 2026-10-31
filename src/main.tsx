@@ -247,10 +247,16 @@ useEffect(() => {
       console.log("LaunchLab Devnet check:", result);
 
       setStatus(
-  "LaunchLab verified. Config: " +
-  result.configAddress +
-  " | Quote mint: " +
-  result.quoteMint
+  "LaunchLab verified" +
+  " | Config: " + result.configAddress +
+  " | Quote mint: " + result.quoteMint +
+  " | Minimum fundraising: " + result.minFundRaisingB +
+  " | Minimum supply: " + result.minSupplyA +
+  " | Minimum sell rate: " + result.minSellRateA +
+  " | Migration rate: " + result.minMigrateRateA +
+  " | Curve type: " + result.curveType +
+  " | Trade fee: " + result.tradeFeeRate +
+  " | Migration fee: " + result.migrateFee
 );
     } catch (error) {
       if (cancelled) return;
