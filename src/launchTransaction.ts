@@ -49,3 +49,19 @@ export async function readLaunchConfig() {
     config: LaunchpadConfig.decode(account.data),
   };
 }
+
+export async function loadRaydiumForWallet(
+  wallet: {
+    publicKey: PublicKey;
+    signAllTransactions: (transactions: any[]) => Promise<any[]>;
+  }
+) {
+  return await Raydium.load({
+    owner: wallet.publicKey,
+    connection: launchConnection,
+    cluster: "devnet",
+    disableFeatureCheck: true,
+    blockhashCommitment: "confirmed",
+    signAllTransactions: wallet.signAllTransactions,
+  });
+}
