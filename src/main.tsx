@@ -35,6 +35,8 @@ function App() {
       ?? "LaunchLab program ID unavailable"
   );
   const [wallet, setWallet] = useState("");
+const [walletProvider, setWalletProvider] =
+  useState<WalletProvider | null>(null);
   const [balance, setBalance] = useState<string | null>(null);
   const [status, setStatus] = useState("Solana Devnet ready");
 const [launchLabStatus, setLaunchLabStatus] = useState("Checking Raydium LaunchLab...");
@@ -308,6 +310,7 @@ if (!provider.signAllTransactions) {
     const lamports = await connection.getBalance(response.publicKey);
 
     setWallet(address);
+setWalletProvider(provider);
     setBalance((lamports / 1_000_000_000).toFixed(4));
     setStatus("Connected to Solana Devnet");
   } catch (error) {
@@ -329,6 +332,7 @@ if (!provider.signAllTransactions) {
       await provider?.disconnect?.();
     } finally {
       setWallet("");
+setWalletProvider(null);
       setBalance(null);
       setStatus("Wallet disconnected");
     }
