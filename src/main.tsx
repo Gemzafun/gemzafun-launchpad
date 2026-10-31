@@ -445,8 +445,32 @@ async function connectWallet() {
 </div>
 <div className="program-status">
   <p>GEMZA Token Metadata</p>
-  <p>{metadataStatus}</p>
-<p>Mint authority: {mintAuthorityStatus}</p>
+
+  <p>{hostedMetadataStatus}</p>
+
+  {hostedMetadata && (
+    <>
+      <p>Name: {hostedMetadata.name ?? "—"}</p>
+      <p>Symbol: {hostedMetadata.symbol ?? "—"}</p>
+      <p>Description: {hostedMetadata.description ?? "—"}</p>
+
+      {hostedMetadata.image && (
+        <img
+          src={hostedMetadata.image}
+          alt="GEMZA token"
+          style={{
+            width: "120px",
+            height: "120px",
+            objectFit: "cover",
+            borderRadius: "12px"
+          }}
+        />
+      )}
+    </>
+  )}
+
+  <p>On-chain Metaplex metadata: {metadataStatus}</p>
+  <p>Mint authority: {mintAuthorityStatus}</p>
 </div>
 
 
