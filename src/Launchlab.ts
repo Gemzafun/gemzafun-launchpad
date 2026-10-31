@@ -48,6 +48,13 @@ export async function checkLaunchLabDevnet() {
     configAddress: configAddress.toBase58(),
     configExists: true,
     quoteMint: new PublicKey(config.mintB).toBase58(),
+minFundRaisingB: config.minFundRaisingB.toString(),
+minSupplyA: config.minSupplyA.toString(),
+minSellRateA: config.minSellRateA.toString(),
+minMigrateRateA: config.minMigrateRateA.toString(),
+curveType: config.curveType,
+tradeFeeRate: config.tradeFeeRate.toString(),
+migrateFee: config.migrateFee.toString(),
   };
 }
 
