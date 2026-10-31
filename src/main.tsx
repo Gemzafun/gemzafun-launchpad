@@ -532,7 +532,10 @@ async function connectRaydiumSdk() {
   <h3>Raydium LaunchLab Configuration</h3>
   <p>{launchLabStatus}</p>
 </div>
-
+<div className="program-status">
+  <h3>Raydium SDK Connection</h3>
+  <p>{raydiumStatus}</p>
+</div>
         <p className="notice">
           Test environment only. LaunchLab trading is not enabled yet.
         </p>
