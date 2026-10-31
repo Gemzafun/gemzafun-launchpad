@@ -239,7 +239,7 @@ useEffect(() => {
 
   async function checkLaunchLab() {
     try {
-      setStatus("Checking Raydium LaunchLab on Devnet...");
+      setLaunchLabStatus("Checking Raydium LaunchLab on Devnet...");
 
       const result = await checkLaunchLabDevnet();
 
@@ -247,7 +247,7 @@ useEffect(() => {
 
       console.log("LaunchLab Devnet check:", result);
 
-      setStatus(
+      setLaunchLabStatus(
   "LaunchLab verified" +
   " | Config: " + result.configAddress +
   " | Quote mint: " + result.quoteMint +
@@ -264,7 +264,7 @@ useEffect(() => {
 
       console.error("LaunchLab check failed:", error);
 
-      setStatus(
+      setLaunchLabStatus(
         error instanceof Error
           ? "LaunchLab check failed: " + error.message
           : "LaunchLab check failed"
@@ -484,7 +484,7 @@ async function connectWallet() {
 <p className="notice">{status}</p>
 <div className="program-status">
   <h3>Raydium LaunchLab Configuration</h3>
-  <p>{status}</p>
+  <p>{launchLabStatus}</p>
 </div>
 
         <p className="notice">
