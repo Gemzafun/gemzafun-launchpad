@@ -460,6 +460,14 @@ async function connectRaydiumSdk() {
       Disconnect Wallet
     </button>
   )}
+
+<button
+  type="button"
+  disabled={!wallet || busy}
+  onClick={connectRaydiumSdk}
+>
+  Connect Raydium SDK
+</button>
 </div>
 
 
