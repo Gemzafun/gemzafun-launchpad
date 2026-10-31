@@ -342,6 +342,31 @@ setWalletProvider(null);
     }
   }
 
+async function connectRaydiumSdk() {
+  if (!wallet || !walletProvider?.signAllTransactions) {
+    setRaydiumStatus("Connect Phantom first.");
+    return;
+  }
+
+  try {
+    setRaydiumStatus("Connecting to Raydium SDK...");
+
+    await loadRaydiumForWallet({
+      publicKey: new PublicKey(wallet),
+      signAllTransactions: (transactions) =>
+        walletProvider.signAllTransactions!(transactions),
+    });
+
+    setRaydiumStatus("Raydium SDK connected on Devnet.");
+  } catch (error) {
+    setRaydiumStatus(
+      error instanceof Error
+        ? "Raydium connection failed: " + error.message
+        : "Raydium connection failed."
+    );
+  }
+}
+
   return (
     <main className="app">
       <header className="header">
