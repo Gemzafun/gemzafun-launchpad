@@ -42,6 +42,9 @@ const [walletProvider, setWalletProvider] =
   const [status, setStatus] = useState("Solana Devnet ready");
 const [launchLabStatus, setLaunchLabStatus] = useState("Checking Raydium LaunchLab...");
   const [busy, setBusy] = useState(false);
+const [raydiumStatus, setRaydiumStatus] = useState(
+  "Raydium SDK not connected"
+);
 const [tokenName, setTokenName] = useState("");
 const [tokenSymbol, setTokenSymbol] = useState("");
 const [tokenImage, setTokenImage] = useState("");
