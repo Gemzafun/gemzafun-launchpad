@@ -364,3 +364,26 @@ footer {
   font-weight: 700;
 }
 
+.authority-option {
+  display: flex !important;
+  align-items: center;
+  gap: 12px;
+  margin-top: 24px !important;
+  cursor: pointer;
+}
+
+.authority-option input[type="checkbox"] {
+  width: 18px !important;
+  min-height: 18px;
+  margin: 0;
+  accent-color: #29b978;
+  cursor: pointer;
+}
+
+.field-hint {
+  margin-top: 8px !important;
+  color: #9db5a7 !important;
+  font-size: 12px !important;
+  line-height: 1.6;
+}
+
