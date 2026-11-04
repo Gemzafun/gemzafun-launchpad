@@ -51,6 +51,8 @@ const [tokenImage, setTokenImage] = useState("");
 const [imageUploading, setImageUploading] = useState(false);
 const [imageUploadStatus, setImageUploadStatus] = useState("");
 const [tokenSupply, setTokenSupply] = useState("1000000000");
+const [tokenDecimals, setTokenDecimals] = useState("9");
+const [revokeMintAuthority, setRevokeMintAuthority] = useState(false);
   const [network, setNetwork] = useState("Solana Devnet");
 const launchLabProgramId =
   DEVNET_PROGRAM_ID?.LAUNCHPAD_PROGRAM?.toBase58?.()
@@ -488,6 +490,35 @@ async function uploadTokenImage(file: File) {
   value={tokenSupply}
   onChange={(e) => setTokenSupply(e.target.value)}
 />
+
+<label htmlFor="token-decimals">Token decimals</label>
+<select
+  id="token-decimals"
+  value={tokenDecimals}
+  onChange={(e) => setTokenDecimals(e.target.value)}
+>
+  {Array.from({ length: 19 }, (_, i) => (
+    <option key={i} value={i}>
+      {i} decimals
+    </option>
+  ))}
+</select>
+
+<label className="authority-option">
+  <input
+    type="checkbox"
+    checked={revokeMintAuthority}
+    onChange={(e) =>
+      setRevokeMintAuthority(e.target.checked)
+    }
+  />
+  Revoke mint authority permanently
+</label>
+
+<p className="field-hint">
+  If selected, no additional tokens can be minted after creation.
+  This action cannot be undone.
+</p>
 
   <button
     type="button"
