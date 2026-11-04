@@ -210,3 +210,133 @@ footer {
   }
 }
 
+
+/* =================================
+   GEMZA.FUN — PROFESSIONAL TOKEN FORM
+================================= */
+
+.launch-card {
+  width: 100%;
+  max-width: 620px;
+  margin: 55px auto 0;
+  padding: 32px;
+  border: 1px solid rgba(103, 230, 165, 0.22);
+  border-radius: 22px;
+  background: linear-gradient(
+    145deg,
+    rgba(20, 45, 34, 0.98),
+    rgba(9, 24, 18, 0.98)
+  );
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.3);
+  text-align: left;
+}
+
+.launch-card h2 {
+  margin: 0 0 10px;
+  color: #f3f8f5;
+  font-size: 27px;
+  letter-spacing: -0.8px;
+}
+
+.launch-card > p {
+  margin: 0 0 28px;
+  color: #9db5a7;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.launch-card label {
+  display: block;
+  margin: 22px 0 9px;
+  color: #dcebe1;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.launch-card input {
+  display: block;
+  width: 100%;
+  min-height: 50px;
+  padding: 13px 15px;
+  border: 1px solid #294638;
+  border-radius: 11px;
+  outline: none;
+  background: #091b13;
+  color: #f3f8f5;
+  font: inherit;
+  font-size: 14px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.launch-card input:focus {
+  border-color: #67e6a5;
+  box-shadow: 0 0 0 3px rgba(103, 230, 165, 0.12);
+}
+
+.launch-card input::placeholder {
+  color: #71877a;
+}
+
+.launch-card input[type="file"] {
+  min-height: auto;
+  padding: 12px;
+  border: 1px dashed #43815d;
+  background: rgba(103, 230, 165, 0.045);
+  cursor: pointer;
+}
+
+.launch-card input[type="file"]::file-selector-button {
+  margin-right: 12px;
+  padding: 9px 13px;
+  border: none;
+  border-radius: 8px;
+  background: #244c36;
+  color: #a8f3c7;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.launch-card input:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.launch-card button {
+  width: 100%;
+  min-height: 52px;
+  margin-top: 28px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #83f0b2, #29b978);
+  color: #06170e;
+  font-size: 15px;
+  font-weight: 900;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.launch-card button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 9px 25px rgba(40, 184, 117, 0.2);
+}
+
+.launch-card button:active {
+  transform: translateY(0);
+}
+
+.launch-card > p:last-of-type {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 600px) {
+  .launch-card {
+    margin-top: 38px;
+    padding: 23px 18px;
+    border-radius: 17px;
+  }
+
+  .launch-card h2 {
+    font-size: 24px;
+  }
+}
+
