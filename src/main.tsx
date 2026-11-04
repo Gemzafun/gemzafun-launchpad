@@ -7,6 +7,7 @@ import {
   checkLaunchLabDevnet,
   checkGemzaMetadata,
   checkGemzaMintAuthority,
+  checkTokenDetails,
 } from "./Launchlab";
 import { Connection, PublicKey } from "@solana/web3.js";
 import { DEVNET_PROGRAM_ID } from "@raydium-io/raydium-sdk-v2";
@@ -59,6 +60,15 @@ const [createdToken, setCreatedToken] = useState<{
   signature: string;
   explorerUrl: string;
   mintExplorerUrl: string;
+} | null>(null);
+const [newTokenDetails, setNewTokenDetails] = useState<{
+  mint: string;
+  supply: string;
+  decimals: number;
+  mintAuthority: string | null;
+  metadataAddress: string;
+  metadataExists: boolean;
+  metadataOwner: string;
 } | null>(null);
   const [network, setNetwork] = useState("Solana Devnet");
 const launchLabProgramId =
@@ -460,6 +470,14 @@ async function handleCreateToken() {
     });
 
     setCreatedToken(result);
+setNewTokenDetails(null);
+
+try {
+  const details = await checkTokenDetails(result.mintAddress);
+  setNewTokenDetails(details);
+} catch (verificationError) {
+  console.error("Token verification failed:", verificationError);
+}
     setStatus("Token successfully created on Solana Devnet!");
   } catch (error) {
     setStatus(
