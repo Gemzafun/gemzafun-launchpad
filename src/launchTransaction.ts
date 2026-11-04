@@ -31,6 +31,17 @@ export const GEMZA_LAUNCH_CONFIG = {
 export async function readLaunchConfig() {
   const programId = DEVNET_PROGRAM_ID.LAUNCHPAD_PROGRAM;
 
+  // 1. Verify the official Devnet program.
+  const programInfo =
+    await launchConnection.getAccountInfo(programId);
+
+  if (!programInfo || !programInfo.executable) {
+    throw new Error(
+      "Raydium LaunchLab program verification failed."
+    );
+  }
+
+  // 2. Derive the expected SOL configuration.
   const configId = getPdaLaunchpadConfigId(
     programId,
     NATIVE_MINT,
@@ -38,15 +49,34 @@ export async function readLaunchConfig() {
     0
   ).publicKey;
 
-  const account = await launchConnection.getAccountInfo(configId);
+  const account =
+    await launchConnection.getAccountInfo(configId);
 
   if (!account) {
-    throw new Error("Raydium LaunchLab config not found on Devnet.");
+    throw new Error(
+      "Raydium LaunchLab config not found on Devnet."
+    );
+  }
+
+  // 3. Verify account ownership.
+  if (!account.owner.equals(programId)) {
+    throw new Error(
+      "LaunchLab config owner verification failed."
+    );
+  }
+
+  // 4. Decode and verify quote mint.
+  const config = LaunchpadConfig.decode(account.data);
+
+  if (!new PublicKey(config.mintB).equals(NATIVE_MINT)) {
+    throw new Error(
+      "Unexpected LaunchLab quote mint."
+    );
   }
 
   return {
     configId,
-    config: LaunchpadConfig.decode(account.data),
+    config,
   };
 }
 
