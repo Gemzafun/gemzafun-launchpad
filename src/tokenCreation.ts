@@ -186,7 +186,7 @@ export async function createDevnetToken(
       mint,
       input.decimals,
       wallet,
-      wallet,
+      null,
       TOKEN_PROGRAM_ID
     )
   );
