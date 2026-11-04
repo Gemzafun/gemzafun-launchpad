@@ -95,3 +95,72 @@ export async function loadRaydiumForWallet(
     signAllTransactions: wallet.signAllTransactions,
   });
 }
+
+export async function runLaunchPreflight(input: {
+  walletAddress: string;
+  name: string;
+  symbol: string;
+  image: string;
+  supply: string;
+  decimals: number;
+}) {
+  const wallet = new PublicKey(input.walletAddress);
+
+  const name = input.name.trim();
+
+  if (!name || name.length > 32) {
+    throw new Error("Token name must contain 1–32 characters.");
+  }
+
+  const symbol = input.symbol.trim().toUpperCase();
+
+  if (!/^[A-Z0-9]{1,10}$/.test(symbol)) {
+    throw new Error("Token symbol must contain 1–10 letters or numbers.");
+  }
+
+  let imageUrl: URL;
+
+  try {
+    imageUrl = new URL(input.image);
+  } catch {
+    throw new Error("Please upload a valid token image first.");
+  }
+
+  if (imageUrl.protocol !== "https:") {
+    throw new Error("Image must use HTTPS.");
+  }
+
+  if (!/^[1-9]\d*$/.test(input.supply)) {
+    throw new Error("Supply must be a positive whole number.");
+  }
+
+  if (
+    !Number.isInteger(input.decimals) ||
+    input.decimals < 0 ||
+    input.decimals > 18
+  ) {
+    throw new Error("Decimals must be between 0 and 18.");
+  }
+
+  const balanceLamports =
+    await launchConnection.getBalance(wallet, "confirmed");
+
+  if (balanceLamports <= 0) {
+    throw new Error("Wallet has no SOL on Devnet.");
+  }
+
+  const { configId, config } = await readLaunchConfig();
+
+  return {
+    success: true,
+    wallet: wallet.toBase58(),
+    balanceSol: balanceLamports / 1_000_000_000,
+    configAddress: configId.toBase58(),
+    quoteMint: new PublicKey(config.mintB).toBase58(),
+    tokenName: name,
+    tokenSymbol: symbol,
+    tokenImage: imageUrl.toString(),
+    tokenSupply: input.supply,
+    decimals: input.decimals,
+  };
+}
