@@ -340,3 +340,27 @@ footer {
   }
 }
 
+.token-image-preview {
+  margin-top: 18px;
+  padding: 16px;
+  border: 1px solid #294c3b;
+  border-radius: 14px;
+  background: #091b13;
+  text-align: center;
+}
+
+.token-image-preview img {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 16px;
+  border: 1px solid #43815d;
+}
+
+.token-image-preview p {
+  margin: 10px 0 0;
+  color: #83edb2;
+  font-size: 13px;
+  font-weight: 700;
+}
+
