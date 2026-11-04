@@ -369,6 +369,49 @@ async function connectRaydiumSdk() {
   }
 }
 
+async function uploadTokenImage(file: File) {
+  if (!file.type.startsWith("image/")) {
+    setImageUploadStatus("Please select an image file.");
+    return;
+  }
+
+  if (file.size > 10 * 1024 * 1024) {
+    setImageUploadStatus("Maximum image size is 10 MB.");
+    return;
+  }
+
+  setImageUploading(true);
+  setImageUploadStatus("Uploading image to Pinata...");
+
+  try {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const response = await fetch(
+      "/.netlify/functions/pinata-upload",
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok || !result.success || !result.url) {
+      throw new Error(result.error || "Image upload failed.");
+    }
+
+    setTokenImage(result.url);
+    setImageUploadStatus("Image uploaded successfully!");
+  } catch (error) {
+    setImageUploadStatus(
+      error instanceof Error ? error.message : "Upload failed."
+    );
+  } finally {
+    setImageUploading(false);
+  }
+}
+
   return (
     <main className="app">
       <header className="header">
