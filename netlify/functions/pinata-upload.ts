@@ -49,14 +49,29 @@ export default async (request: Request) => {
       }
     );
 
-    const result = await response.json();
+    const responseText = await response.text();
 
-    if (!response.ok) {
-      return Response.json(
-        { error: "Pinata upload failed" },
-        { status: response.status }
-      );
-    }
+let result: any;
+
+try {
+  result = JSON.parse(responseText);
+} catch {
+  result = {};
+}
+
+if (!response.ok) {
+  console.error("Pinata error:", response.status, result);
+
+  return Response.json(
+    {
+      error:
+        result.error ||
+        result.message ||
+        `Pinata upload failed (HTTP ${response.status})`
+    },
+    { status: response.status }
+  );
+}
 
     return Response.json({
       success: true,
