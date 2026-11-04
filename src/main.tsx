@@ -11,7 +11,10 @@ import {
 } from "./Launchlab";
 import { Connection, PublicKey } from "@solana/web3.js";
 import { DEVNET_PROGRAM_ID } from "@raydium-io/raydium-sdk-v2";
-import { loadRaydiumForWallet } from "./launchTransaction";
+import {
+  loadRaydiumForWallet,
+  runLaunchPreflight,
+} from "./launchTransaction";
 import { createDevnetToken } from "./tokenCreation";
 import "./style.css";
 
@@ -50,6 +53,11 @@ const [raydiumStatus, setRaydiumStatus] = useState(
 const [raydiumSdk, setRaydiumSdk] = useState<
   Awaited<ReturnType<typeof loadRaydiumForWallet>> | null
 >(null);
+const [preflightStatus, setPreflightStatus] = useState(
+  "Launch readiness not checked"
+);
+
+const [preflightResult, setPreflightResult] = useState<any>(null);
 const [tokenName, setTokenName] = useState("");
 const [tokenSymbol, setTokenSymbol] = useState("");
 const [tokenImage, setTokenImage] = useState("");
@@ -396,6 +404,41 @@ async function connectRaydiumSdk() {
   }
 }
 
+
+async function handleLaunchPreflight() {
+  if (!wallet) {
+    setPreflightStatus("Connect Phantom first.");
+    return;
+  }
+
+  setBusy(true);
+  setPreflightResult(null);
+  setPreflightStatus("Checking launch readiness...");
+
+  try {
+    const result = await runLaunchPreflight({
+      walletAddress: wallet,
+      name: tokenName,
+      symbol: tokenSymbol,
+      image: tokenImage,
+      supply: tokenSupply,
+      decimals: Number(tokenDecimals),
+    });
+
+    setPreflightResult(result);
+    setPreflightStatus("All launch preflight checks passed.");
+  } catch (error) {
+    setPreflightStatus(
+      error instanceof Error
+        ? error.message
+        : "Launch readiness check failed."
+    );
+  } finally {
+    setBusy(false);
+  }
+}
+
+
 async function uploadTokenImage(file: File) {
   if (!file.type.startsWith("image/")) {
     setImageUploadStatus("Please select an image file.");
@@ -612,6 +655,14 @@ try {
 >
   {busy ? "Creating Token..." : "Create Token"}
 </button>
+
+<button
+  type="button"
+  disabled={busy || imageUploading || !wallet || !raydiumSdk}
+  onClick={handleLaunchPreflight}
+>
+  {busy ? "Checking..." : "Check Launch Readiness"}
+</button>
 </div>
 
 
@@ -646,6 +697,26 @@ try {
         View Transaction
       </a>
     </p>
+  </div>
+)}
+
+{preflightStatus && (
+  <div className="program-status">
+    <h3>Launch Readiness Check</h3>
+    <p>{preflightStatus}</p>
+
+    {preflightResult && (
+      <>
+        <p>Wallet: {preflightResult.wallet}</p>
+        <p>Devnet SOL: {preflightResult.balanceSol}</p>
+        <p>Token: {preflightResult.tokenName}</p>
+        <p>Symbol: {preflightResult.tokenSymbol}</p>
+        <p>Supply: {preflightResult.tokenSupply}</p>
+        <p>Decimals: {preflightResult.decimals}</p>
+        <p>Quote mint: {preflightResult.quoteMint}</p>
+        <p>LaunchLab config: {preflightResult.configAddress}</p>
+      </>
+    )}
   </div>
 )}
 
