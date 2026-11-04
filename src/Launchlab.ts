@@ -18,15 +18,20 @@ const connection = new Connection(
   "confirmed"
 );
 
+
 export async function checkLaunchLabDevnet() {
   const programId = DEVNET_PROGRAM_ID.LAUNCHPAD_PROGRAM;
 
+  // 1. Verify the official LaunchLab program exists and is executable.
   const programInfo = await connection.getAccountInfo(programId);
 
-  if (!programInfo) {
-    throw new Error("Raydium LaunchLab program not found on Devnet.");
+  if (!programInfo || !programInfo.executable) {
+    throw new Error(
+      "Raydium LaunchLab program verification failed on Devnet."
+    );
   }
 
+  // 2. Derive the expected SOL configuration.
   const configAddress = getPdaLaunchpadConfigId(
     programId,
     NATIVE_MINT,
@@ -34,29 +39,49 @@ export async function checkLaunchLabDevnet() {
     0
   ).publicKey;
 
-  const configAccount = await connection.getAccountInfo(configAddress);
+  const configAccount =
+    await connection.getAccountInfo(configAddress);
 
   if (!configAccount) {
-    throw new Error("LaunchLab configuration not found on Devnet.");
+    throw new Error(
+      "LaunchLab configuration not found on Devnet."
+    );
   }
 
-  const config = LaunchpadConfig.decode(configAccount.data);
+  // 3. Verify configuration account ownership.
+  if (!configAccount.owner.equals(programId)) {
+    throw new Error(
+      "LaunchLab configuration owner verification failed."
+    );
+  }
 
+  // 4. Decode and verify the quote mint.
+  const config = LaunchpadConfig.decode(configAccount.data);
+  const quoteMint = new PublicKey(config.mintB);
+
+  if (!quoteMint.equals(NATIVE_MINT)) {
+    throw new Error(
+      "Unexpected LaunchLab quote mint. Expected SOL."
+    );
+  }
+
+  // 5. Return verified configuration details.
   return {
     network: "Solana Devnet",
     programId: programId.toBase58(),
     configAddress: configAddress.toBase58(),
     configExists: true,
-    quoteMint: new PublicKey(config.mintB).toBase58(),
-minFundRaisingB: config.minFundRaisingB.toString(),
-minSupplyA: config.minSupplyA.toString(),
-minSellRateA: config.minSellRateA.toString(),
-minMigrateRateA: config.minMigrateRateA.toString(),
-curveType: config.curveType,
-tradeFeeRate: config.tradeFeeRate.toString(),
-migrateFee: config.migrateFee.toString(),
+    quoteMint: quoteMint.toBase58(),
+    minFundRaisingB: config.minFundRaisingB.toString(),
+    minSupplyA: config.minSupplyA.toString(),
+    minSellRateA: config.minSellRateA.toString(),
+    minMigrateRateA: config.minMigrateRateA.toString(),
+    curveType: config.curveType,
+    tradeFeeRate: config.tradeFeeRate.toString(),
+    migrateFee: config.migrateFee.toString(),
   };
 }
+
 
 export async function checkGemzaMetadata() {
   const mint = new PublicKey(
