@@ -580,15 +580,12 @@ async function handleCreateToken() {
 </p>
 
   <button
-    type="button"
-    onClick={() =>
-      setStatus(
-        "Token form added. Launch transactions are not enabled yet."
-      )
-    }
-  >
-    Prepare Token Launch
-  </button>
+  type="button"
+  disabled={busy || imageUploading || !wallet}
+  onClick={handleCreateToken}
+>
+  {busy ? "Creating Token..." : "Create Token"}
+</button>
 </div>
 
         
