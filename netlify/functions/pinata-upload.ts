@@ -64,9 +64,12 @@ if (!response.ok) {
   return Response.json(
     {
       error:
-        result.error ||
-        result.message ||
-        `Pinata upload failed (HTTP ${response.status})`
+  typeof result.error === "string"
+    ? result.error
+    : result.error?.message ||
+      result.message ||
+      JSON.stringify(result.error) ||
+      `Pinata upload failed (HTTP ${response.status})`
     },
     { status: response.status }
   );
