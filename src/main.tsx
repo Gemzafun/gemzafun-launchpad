@@ -469,6 +469,16 @@ async function uploadTokenImage(file: File) {
 
 <p>{imageUploadStatus}</p>
 
+{tokenImage && (
+  <div className="token-image-preview">
+    <img
+      src={tokenImage}
+      alt="Token image preview"
+    />
+    <p>Token image preview</p>
+  </div>
+)}
+
   <label htmlFor="token-supply">Total supply</label>
   <input
   id="token-supply"
