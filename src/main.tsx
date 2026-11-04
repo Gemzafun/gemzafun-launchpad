@@ -11,6 +11,7 @@ import {
 import { Connection, PublicKey } from "@solana/web3.js";
 import { DEVNET_PROGRAM_ID } from "@raydium-io/raydium-sdk-v2";
 import { loadRaydiumForWallet } from "./launchTransaction";
+import { createDevnetToken } from "./tokenCreation";
 import "./style.css";
 
 type WalletProvider = {
