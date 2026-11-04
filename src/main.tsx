@@ -47,6 +47,9 @@ const [launchLabStatus, setLaunchLabStatus] = useState("Checking Raydium LaunchL
 const [raydiumStatus, setRaydiumStatus] = useState(
   "Raydium SDK not connected"
 );
+const [raydiumSdk, setRaydiumSdk] = useState<
+  Awaited<ReturnType<typeof loadRaydiumForWallet>> | null
+>(null);
 const [tokenName, setTokenName] = useState("");
 const [tokenSymbol, setTokenSymbol] = useState("");
 const [tokenImage, setTokenImage] = useState("");
@@ -358,6 +361,8 @@ setWalletProvider(provider);
     } finally {
       setWallet("");
 setWalletProvider(null);
+setRaydiumSdk(null);
+setRaydiumStatus("Raydium SDK not connected");
       setBalance(null);
       setStatus("Wallet disconnected");
     }
@@ -372,14 +377,17 @@ async function connectRaydiumSdk() {
   try {
     setRaydiumStatus("Connecting to Raydium SDK...");
 
-    await loadRaydiumForWallet({
+    const sdk = await loadRaydiumForWallet({
       publicKey: new PublicKey(wallet),
       signAllTransactions: (transactions) =>
         walletProvider.signAllTransactions!(transactions),
     });
 
+    setRaydiumSdk(sdk);
     setRaydiumStatus("Raydium SDK connected on Devnet.");
   } catch (error) {
+    setRaydiumSdk(null);
+
     setRaydiumStatus(
       error instanceof Error
         ? "Raydium connection failed: " + error.message
@@ -771,7 +779,14 @@ try {
 </div>
 <div className="program-status">
   <h3>Raydium SDK Connection</h3>
+
   <p>{raydiumStatus}</p>
+
+  <p>
+    SDK instance: {raydiumSdk ? "Loaded" : "Not loaded"}
+  </p>
+
+  <p>Network: Solana Devnet</p>
 </div>
         <p className="notice">
           Test environment only. LaunchLab trading is not enabled yet.
