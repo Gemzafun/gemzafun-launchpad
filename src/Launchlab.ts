@@ -104,3 +104,40 @@ export async function checkGemzaMintAuthority() {
     mintAuthority: mintInfo.mintAuthority?.toBase58() ?? null,
   };
 }
+
+
+export async function checkTokenDetails(mintAddress: string) {
+  const mint = new PublicKey(mintAddress);
+
+  // Read actual SPL token information.
+  const mintInfo = await getMint(connection, mint);
+
+  // Derive the Metaplex metadata account.
+  const metadataProgram = new PublicKey(
+    "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
+  );
+
+  const [metadataAddress] = PublicKey.findProgramAddressSync(
+    [
+      Buffer.from("metadata"),
+      metadataProgram.toBuffer(),
+      mint.toBuffer(),
+    ],
+    metadataProgram
+  );
+
+  const metadataInfo =
+    await connection.getAccountInfo(metadataAddress);
+
+  return {
+    mint: mint.toBase58(),
+    supply: mintInfo.supply.toString(),
+    decimals: mintInfo.decimals,
+    mintAuthority:
+      mintInfo.mintAuthority?.toBase58() ?? null,
+    metadataAddress: metadataAddress.toBase58(),
+    metadataExists: metadataInfo !== null,
+    metadataOwner:
+      metadataInfo?.owner.toBase58() ?? "No metadata account",
+  };
+}
