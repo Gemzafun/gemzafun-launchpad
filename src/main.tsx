@@ -588,6 +588,40 @@ async function handleCreateToken() {
 </button>
 </div>
 
+
+{createdToken && (
+  <div className="program-status">
+    <h3>Token Created Successfully!</h3>
+
+    <p>Network: Solana Devnet</p>
+
+    <p>Mint Address:</p>
+    <p className="address">{createdToken.mintAddress}</p>
+
+    <p>Transaction:</p>
+    <p className="address">{createdToken.signature}</p>
+
+    <p>
+      <a
+        href={createdToken.mintExplorerUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        View Token on Solana Explorer
+      </a>
+    </p>
+
+    <p>
+      <a
+        href={createdToken.explorerUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        View Transaction
+      </a>
+    </p>
+  </div>
+)}
         
 
 <div className="actions">
