@@ -54,6 +54,12 @@ const [imageUploadStatus, setImageUploadStatus] = useState("");
 const [tokenSupply, setTokenSupply] = useState("1000000000");
 const [tokenDecimals, setTokenDecimals] = useState("9");
 const [revokeMintAuthority, setRevokeMintAuthority] = useState(false);
+const [createdToken, setCreatedToken] = useState<{
+  mintAddress: string;
+  signature: string;
+  explorerUrl: string;
+  mintExplorerUrl: string;
+} | null>(null);
   const [network, setNetwork] = useState("Solana Devnet");
 const launchLabProgramId =
   DEVNET_PROGRAM_ID?.LAUNCHPAD_PROGRAM?.toBase58?.()
@@ -414,6 +420,58 @@ async function uploadTokenImage(file: File) {
     setImageUploading(false);
   }
 }
+
+
+async function handleCreateToken() {
+  if (!wallet || !walletProvider) {
+    setStatus("Connect Phantom before creating a token.");
+    return;
+  }
+
+  if (!walletProvider.signTransaction) {
+    setStatus("Phantom transaction signing is unavailable.");
+    return;
+  }
+
+  if (revokeMintAuthority) {
+    const confirmed = window.confirm(
+      "WARNING: Mint authority will be permanently revoked. Continue?"
+    );
+
+    if (!confirmed) return;
+  }
+
+  setBusy(true);
+  setCreatedToken(null);
+  setStatus("Preparing your token on Solana Devnet...");
+
+  try {
+    const result = await createDevnetToken({
+      connection,
+      wallet: new PublicKey(wallet),
+      signTransaction: (transaction) =>
+        walletProvider.signTransaction!(transaction),
+      name: tokenName,
+      symbol: tokenSymbol,
+      image: tokenImage,
+      supply: tokenSupply,
+      decimals: Number(tokenDecimals),
+      revokeMintAuthority,
+    });
+
+    setCreatedToken(result);
+    setStatus("Token successfully created on Solana Devnet!");
+  } catch (error) {
+    setStatus(
+      error instanceof Error
+        ? "Token creation failed: " + error.message
+        : "Token creation failed."
+    );
+  } finally {
+    setBusy(false);
+  }
+}
+
 
   return (
     <main className="app">
