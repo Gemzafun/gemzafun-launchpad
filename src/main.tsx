@@ -455,15 +455,6 @@ async function uploadTokenImage(file: File) {
   }
 />
 
-  <label htmlFor="token-image">Token image URL</label>
-  <input
-  id="token-image"
-  type="url"
-  placeholder="https://example.com/token.png"
-  value={tokenImage}
-  onChange={(e) => setTokenImage(e.target.value)}
-/>
-
 <label htmlFor="token-image-file">Upload token image</label>
 <input
   id="token-image-file"
