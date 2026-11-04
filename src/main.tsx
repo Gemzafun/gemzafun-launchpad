@@ -464,6 +464,20 @@ async function uploadTokenImage(file: File) {
   onChange={(e) => setTokenImage(e.target.value)}
 />
 
+<label htmlFor="token-image-file">Upload token image</label>
+<input
+  id="token-image-file"
+  type="file"
+  accept="image/*"
+  disabled={imageUploading}
+  onChange={(e) => {
+    const file = e.target.files?.[0];
+    if (file) void uploadTokenImage(file);
+  }}
+/>
+
+<p>{imageUploadStatus}</p>
+
   <label htmlFor="token-supply">Total supply</label>
   <input
   id="token-supply"
