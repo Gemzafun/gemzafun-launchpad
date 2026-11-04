@@ -7,7 +7,7 @@ export default async (request: Request) => {
     );
   }
 
-  const jwt = Netlify.env.get("PINATA_JWT");
+  const jwt = process.env.PINATA_JWT;
 
   if (!jwt) {
     return Response.json(
