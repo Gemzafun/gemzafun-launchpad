@@ -640,6 +640,44 @@ try {
     </p>
   </div>
 )}
+
+{newTokenDetails && (
+  <div className="program-status">
+    <h3>New Token Verification</h3>
+
+    <p>
+      <strong>On-chain verification:</strong> Successful
+    </p>
+
+    <p>Mint Address:</p>
+    <p className="address">{newTokenDetails.mint}</p>
+
+    <p>
+      Supply (base units): {newTokenDetails.supply}
+    </p>
+
+    <p>
+      Decimals: {newTokenDetails.decimals}
+    </p>
+
+    <p>
+      Mint Authority:{" "}
+      {newTokenDetails.mintAuthority ?? "Revoked"}
+    </p>
+
+    <p>
+      Metaplex Metadata:{" "}
+      {newTokenDetails.metadataExists
+        ? "Account exists"
+        : "Not found"}
+    </p>
+
+    <p>Metadata Account:</p>
+    <p className="address">
+      {newTokenDetails.metadataAddress}
+    </p>
+  </div>
+)}
         
 
 <div className="actions">
