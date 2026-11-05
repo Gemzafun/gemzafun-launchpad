@@ -14,6 +14,7 @@ import { DEVNET_PROGRAM_ID } from "@raydium-io/raydium-sdk-v2";
 import {
   loadRaydiumForWallet,
   runLaunchPreflight,
+  createLaunchLabBondingCurve,
 } from "./launchTransaction";
 import { createDevnetToken } from "./tokenCreation";
 import "./style.css";
@@ -58,6 +59,13 @@ const [preflightStatus, setPreflightStatus] = useState(
 );
 
 const [preflightResult, setPreflightResult] = useState<any>(null);
+const [launchedBondingCurve, setLaunchedBondingCurve] = useState<{
+  mintAddress: string;
+  poolAddress: string;
+  signatures: string[];
+  mintExplorerUrl: string;
+  poolExplorerUrl: string;
+} | null>(null);
 const [tokenName, setTokenName] = useState("");
 const [tokenSymbol, setTokenSymbol] = useState("");
 const [tokenImage, setTokenImage] = useState("");
@@ -483,6 +491,69 @@ async function uploadTokenImage(file: File) {
 }
 
 
+async function handleLaunchBondingCurve() {
+  if (!wallet || !walletProvider || !raydiumSdk) {
+    setStatus("Connect Phantom and Raydium before launching.");
+    return;
+  }
+
+  if (!tokenName.trim() || !tokenSymbol.trim() || !tokenImage.startsWith("https://")) {
+    setStatus("Enter a token name and symbol, then upload a token image.");
+    return;
+  }
+
+  setBusy(true);
+  setLaunchedBondingCurve(null);
+  setStatus("Uploading LaunchLab token metadata to IPFS...");
+
+  try {
+    const metadata = {
+      name: tokenName.trim(),
+      symbol: tokenSymbol.trim().toUpperCase(),
+      description: `${tokenName.trim()} launched on GEMZA.FUN through Raydium LaunchLab.`,
+      image: tokenImage,
+      external_url: "https://gemzafun.netlify.app",
+    };
+
+    const formData = new FormData();
+    const metadataFile = new Blob(
+      [JSON.stringify(metadata)],
+      { type: "application/json" }
+    );
+    formData.append("file", metadataFile, "launchlab-token-metadata.json");
+
+    const uploadResponse = await fetch(
+      "/.netlify/functions/pinata-upload",
+      { method: "POST", body: formData }
+    );
+    const uploadResult = await uploadResponse.json();
+
+    if (!uploadResponse.ok || !uploadResult.success || !uploadResult.url) {
+      throw new Error(uploadResult.error || "Token metadata upload failed.");
+    }
+
+    setStatus("Preparing Raydium LaunchLab transactions. Review each Phantom approval.");
+    const result = await createLaunchLabBondingCurve({
+      raydium: raydiumSdk,
+      name: tokenName,
+      symbol: tokenSymbol,
+      metadataUri: uploadResult.url,
+    });
+
+    setLaunchedBondingCurve(result);
+    setStatus("LaunchLab token and bonding-curve pool verified on Solana Devnet.");
+  } catch (error) {
+    setStatus(
+      error instanceof Error
+        ? "Bonding-curve launch failed: " + error.message
+        : "Bonding-curve launch failed."
+    );
+  } finally {
+    setBusy(false);
+  }
+}
+
+
 async function handleCreateToken() {
   if (!wallet || !walletProvider) {
     setStatus("Connect Phantom before creating a token.");
@@ -665,6 +736,25 @@ try {
 </button>
 </div>
 
+<div className="launch-card">
+  <h2>Launch on Bonding Curve</h2>
+  <p>
+    Launch a new token and its Raydium LaunchLab bonding curve.
+    This creates a separate mint; it does not use an existing standalone token.
+  </p>
+  <p className="field-hint">
+    Uses the token name, symbol, and uploaded image above. LaunchLab applies its
+    standard token supply and curve configuration on Devnet.
+  </p>
+  <button
+    type="button"
+    disabled={busy || imageUploading || !wallet || !raydiumSdk || !tokenName.trim() || !tokenSymbol.trim() || !tokenImage}
+    onClick={handleLaunchBondingCurve}
+  >
+    {busy ? "Launching..." : "Launch on Bonding Curve"}
+  </button>
+</div>
+
 
 {createdToken && (
   <div className="program-status">
@@ -697,6 +787,38 @@ try {
         View Transaction
       </a>
     </p>
+  </div>
+)}
+
+{launchedBondingCurve && (
+  <div className="program-status">
+    <h3>Bonding-Curve Launch Verified</h3>
+    <p>Network: Solana Devnet</p>
+    <p>Token mint:</p>
+    <p className="address">{launchedBondingCurve.mintAddress}</p>
+    <p>
+      <a href={launchedBondingCurve.mintExplorerUrl} target="_blank" rel="noopener noreferrer">
+        View token mint
+      </a>
+    </p>
+    <p>LaunchLab pool:</p>
+    <p className="address">{launchedBondingCurve.poolAddress}</p>
+    <p>
+      <a href={launchedBondingCurve.poolExplorerUrl} target="_blank" rel="noopener noreferrer">
+        View bonding-curve pool
+      </a>
+    </p>
+    {launchedBondingCurve.signatures.map((signature, index) => (
+      <p key={signature}>
+        <a
+          href={`https://explorer.solana.com/tx/${signature}?cluster=devnet`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          View launch transaction {index + 1}
+        </a>
+      </p>
+    ))}
   </div>
 )}
 
