@@ -8,9 +8,10 @@ import {
   Raydium,
   TxVersion,
   DEVNET_PROGRAM_ID,
-  DEV_API_URLS,
   LaunchpadConfig,
+  LaunchpadPoolInitParam,
   getPdaLaunchpadConfigId,
+  getPdaLaunchpadPoolId,
 } from "@raydium-io/raydium-sdk-v2";
 
 import { NATIVE_MINT } from "@solana/spl-token";
@@ -31,7 +32,6 @@ export const GEMZA_LAUNCH_CONFIG = {
 export async function readLaunchConfig() {
   const programId = DEVNET_PROGRAM_ID.LAUNCHPAD_PROGRAM;
 
-  // 1. Verify the official Devnet program.
   const programInfo =
     await launchConnection.getAccountInfo(programId);
 
@@ -41,7 +41,6 @@ export async function readLaunchConfig() {
     );
   }
 
-  // 2. Derive the expected SOL configuration.
   const configId = getPdaLaunchpadConfigId(
     programId,
     NATIVE_MINT,
@@ -58,14 +57,12 @@ export async function readLaunchConfig() {
     );
   }
 
-  // 3. Verify account ownership.
   if (!account.owner.equals(programId)) {
     throw new Error(
       "LaunchLab config owner verification failed."
     );
   }
 
-  // 4. Decode and verify quote mint.
   const config = LaunchpadConfig.decode(account.data);
 
   if (!new PublicKey(config.mintB).equals(NATIVE_MINT)) {
@@ -94,6 +91,108 @@ export async function loadRaydiumForWallet(
     blockhashCommitment: "confirmed",
     signAllTransactions: wallet.signAllTransactions,
   });
+}
+
+/**
+ * Creates a new Raydium LaunchLab mint and bonding-curve pool.
+ * This is intentionally separate from createDevnetToken(): LaunchLab
+ * creates its own mint; it cannot attach an existing standalone mint.
+ */
+export async function createLaunchLabBondingCurve(input: {
+  raydium: Awaited<ReturnType<typeof loadRaydiumForWallet>>;
+  name: string;
+  symbol: string;
+  metadataUri: string;
+}) {
+  const name = input.name.trim();
+  const symbol = input.symbol.trim().toUpperCase();
+
+  if (!name || name.length > 32) {
+    throw new Error("Token name must contain 1–32 characters.");
+  }
+
+  if (!/^[A-Z0-9]{1,10}$/.test(symbol)) {
+    throw new Error("Token symbol must contain 1–10 letters or numbers.");
+  }
+
+  let metadataUrl: URL;
+  try {
+    metadataUrl = new URL(input.metadataUri);
+  } catch {
+    throw new Error("Token metadata URL is invalid.");
+  }
+
+  if (metadataUrl.protocol !== "https:") {
+    throw new Error("Token metadata must use HTTPS.");
+  }
+
+  if (metadataUrl.toString().length > 200) {
+    throw new Error("Token metadata URL is too long for LaunchLab.");
+  }
+
+  const programId = DEVNET_PROGRAM_ID.LAUNCHPAD_PROGRAM;
+  const { configId, config } = await readLaunchConfig();
+
+  // Confirm the configured quote mint and its token program/decimals.
+  const mintBInfo = await input.raydium.token.getTokenInfo(config.mintB);
+  const mintKeypair = Keypair.generate();
+  const mintA = mintKeypair.publicKey;
+
+  const { execute } = await input.raydium.launchpad.createLaunchpad({
+    programId,
+    mintA,
+    decimals: LaunchpadPoolInitParam.decimals,
+    name,
+    symbol,
+    uri: metadataUrl.toString(),
+    migrateType: "amm",
+    configId,
+    configInfo: config,
+    mintBDecimals: mintBInfo.decimals,
+    mintBProgram: new PublicKey(mintBInfo.programId),
+    txVersion: TxVersion.V0,
+    slippage: new BN(100),
+    buyAmount: new BN(1000),
+    createOnly: true,
+    extraSigners: [mintKeypair],
+  });
+
+  // LaunchLab returns multiple transactions. They must execute in order.
+  const execution = await execute({ sequentially: true });
+
+  const poolId = getPdaLaunchpadPoolId(
+    programId,
+    mintA,
+    NATIVE_MINT
+  ).publicKey;
+
+  // Do not report success until both accounts are visible on Devnet.
+  const [mintAccount, poolAccount] = await Promise.all([
+    launchConnection.getAccountInfo(mintA, "confirmed"),
+    launchConnection.getAccountInfo(poolId, "confirmed"),
+  ]);
+
+  if (!mintAccount) {
+    throw new Error(
+      "Launch transactions were submitted, but the new token mint could not be verified on Devnet."
+    );
+  }
+
+  if (!poolAccount || !poolAccount.owner.equals(programId)) {
+    throw new Error(
+      "Launch transactions were submitted, but the LaunchLab pool could not be verified on Devnet."
+    );
+  }
+
+  return {
+    mintAddress: mintA.toBase58(),
+    poolAddress: poolId.toBase58(),
+    signatures: Array.isArray(execution?.txIds) ? execution.txIds : [],
+    mintExplorerUrl:
+      `https://explorer.solana.com/address/${mintA.toBase58()}?cluster=devnet`,
+    poolExplorerUrl:
+      `https://explorer.solana.com/address/${poolId.toBase58()}?cluster=devnet`,
+  };
 }
 
 export async function runLaunchPreflight(input: {

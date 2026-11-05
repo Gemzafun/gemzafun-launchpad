@@ -1,4 +1,3 @@
-
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
@@ -10,10 +9,11 @@ export default defineConfig({
   resolve: {
     alias: {
       buffer: "buffer/",
+      process: "process/browser",
     },
   },
   optimizeDeps: {
-    include: ["buffer"],
+    include: ["buffer", "process"],
   },
   server: {
     host: "0.0.0.0",
