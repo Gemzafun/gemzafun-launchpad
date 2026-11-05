@@ -66,6 +66,11 @@ const [launchedBondingCurve, setLaunchedBondingCurve] = useState<{
   mintExplorerUrl: string;
   poolExplorerUrl: string;
 } | null>(null);
+const [launchTokenName, setLaunchTokenName] = useState("");
+const [launchTokenSymbol, setLaunchTokenSymbol] = useState("");
+const [launchTokenImage, setLaunchTokenImage] = useState("");
+const [launchImageUploading, setLaunchImageUploading] = useState(false);
+const [launchImageUploadStatus, setLaunchImageUploadStatus] = useState("");
 const [tokenName, setTokenName] = useState("");
 const [tokenSymbol, setTokenSymbol] = useState("");
 const [tokenImage, setTokenImage] = useState("");
@@ -491,14 +496,54 @@ async function uploadTokenImage(file: File) {
 }
 
 
+async function uploadLaunchTokenImage(file: File) {
+  if (!file.type.startsWith("image/")) {
+    setLaunchImageUploadStatus("Please select an image file.");
+    return;
+  }
+
+  if (file.size > 10 * 1024 * 1024) {
+    setLaunchImageUploadStatus("Maximum image size is 10 MB.");
+    return;
+  }
+
+  setLaunchImageUploading(true);
+  setLaunchImageUploadStatus("Uploading image to IPFS...");
+
+  try {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const response = await fetch(
+      "/.netlify/functions/pinata-upload",
+      { method: "POST", body: formData }
+    );
+    const result = await response.json();
+
+    if (!response.ok || !result.success || !result.url) {
+      throw new Error(result.error || "Image upload failed.");
+    }
+
+    setLaunchTokenImage(result.url);
+    setLaunchImageUploadStatus("Image uploaded successfully.");
+  } catch (error) {
+    setLaunchImageUploadStatus(
+      error instanceof Error ? error.message : "Image upload failed."
+    );
+  } finally {
+    setLaunchImageUploading(false);
+  }
+}
+
+
 async function handleLaunchBondingCurve() {
   if (!wallet || !walletProvider || !raydiumSdk) {
     setStatus("Connect Phantom and Raydium before launching.");
     return;
   }
 
-  if (!tokenName.trim() || !tokenSymbol.trim() || !tokenImage.startsWith("https://")) {
-    setStatus("Enter a token name and symbol, then upload a token image.");
+  if (!launchTokenName.trim() || !launchTokenSymbol.trim() || !launchTokenImage.startsWith("https://")) {
+    setStatus("Enter a launch token name and symbol, then upload its image.");
     return;
   }
 
@@ -508,10 +553,10 @@ async function handleLaunchBondingCurve() {
 
   try {
     const metadata = {
-      name: tokenName.trim(),
-      symbol: tokenSymbol.trim().toUpperCase(),
-      description: `${tokenName.trim()} launched on GEMZA.FUN through Raydium LaunchLab.`,
-      image: tokenImage,
+      name: launchTokenName.trim(),
+      symbol: launchTokenSymbol.trim().toUpperCase(),
+      description: `${launchTokenName.trim()} launched on GEMZA.FUN through Raydium LaunchLab.`,
+      image: launchTokenImage,
       external_url: "https://gemzafun.netlify.app",
     };
 
@@ -535,8 +580,8 @@ async function handleLaunchBondingCurve() {
     setStatus("Preparing Raydium LaunchLab transactions. Review each Phantom approval.");
     const result = await createLaunchLabBondingCurve({
       raydium: raydiumSdk,
-      name: tokenName,
-      symbol: tokenSymbol,
+      name: launchTokenName,
+      symbol: launchTokenSymbol,
       metadataUri: uploadResult.url,
     });
 
@@ -738,17 +783,56 @@ try {
 
 <div className="launch-card">
   <h2>Launch on Bonding Curve</h2>
-  <p>
-    Launch a new token and its Raydium LaunchLab bonding curve.
-    This creates a separate mint; it does not use an existing standalone token.
-  </p>
+  <p>Create a new token and its Raydium LaunchLab bonding curve.</p>
+
+  <label htmlFor="launch-token-name">Token name</label>
+  <input
+    id="launch-token-name"
+    type="text"
+    placeholder="e.g. Gemza Token"
+    maxLength={32}
+    value={launchTokenName}
+    onChange={(e) => setLaunchTokenName(e.target.value)}
+  />
+
+  <label htmlFor="launch-token-symbol">Token symbol</label>
+  <input
+    id="launch-token-symbol"
+    type="text"
+    placeholder="e.g. GEMZA"
+    maxLength={10}
+    value={launchTokenSymbol}
+    onChange={(e) => setLaunchTokenSymbol(e.target.value.toUpperCase())}
+  />
+
+  <label htmlFor="launch-token-image">Token image</label>
+  <input
+    id="launch-token-image"
+    type="file"
+    accept="image/*"
+    disabled={launchImageUploading}
+    onChange={(e) => {
+      const file = e.target.files?.[0];
+      if (file) void uploadLaunchTokenImage(file);
+    }}
+  />
+  <p>{launchImageUploadStatus}</p>
+
+  {launchTokenImage && (
+    <div className="token-image-preview">
+      <img src={launchTokenImage} alt="Bonding-curve token preview" />
+      <p>Token image preview</p>
+    </div>
+  )}
+
   <p className="field-hint">
-    Uses the token name, symbol, and uploaded image above. LaunchLab applies its
-    standard token supply and curve configuration on Devnet.
+    LaunchLab creates a new mint with its standard token supply and curve
+    configuration. Your standalone token creator remains separate.
   </p>
+
   <button
     type="button"
-    disabled={busy || imageUploading || !wallet || !raydiumSdk || !tokenName.trim() || !tokenSymbol.trim() || !tokenImage}
+    disabled={busy || launchImageUploading || !wallet || !raydiumSdk || !launchTokenName.trim() || !launchTokenSymbol.trim() || !launchTokenImage}
     onClick={handleLaunchBondingCurve}
   >
     {busy ? "Launching..." : "Launch on Bonding Curve"}
