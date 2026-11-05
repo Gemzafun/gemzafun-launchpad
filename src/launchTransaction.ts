@@ -136,10 +136,6 @@ export async function createLaunchLabBondingCurve(input: {
 
   // Confirm the configured quote mint and its token program/decimals.
   const mintBInfo = await input.raydium.token.getTokenInfo(config.mintB);
-  if (!new PublicKey(mintBInfo.address).equals(NATIVE_MINT)) {
-    throw new Error("The verified LaunchLab config is not using SOL.");
-  }
-
   const mintKeypair = Keypair.generate();
   const mintA = mintKeypair.publicKey;
 
