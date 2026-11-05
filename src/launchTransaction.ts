@@ -152,7 +152,7 @@ export async function createLaunchLabBondingCurve(input: {
     mintBProgram: new PublicKey(mintBInfo.programId),
     txVersion: TxVersion.V0,
     slippage: new BN(100),
-    buyAmount: new BN(0),
+    buyAmount: new BN(1000),
     createOnly: true,
     extraSigners: [mintKeypair],
   });
