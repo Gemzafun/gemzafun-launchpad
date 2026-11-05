@@ -982,7 +982,7 @@ try {
   <p>Network: Solana Devnet</p>
 </div>
         <p className="notice">
-          Test environment only. LaunchLab trading is not enabled yet.
+          Test environment only. Bonding-curve launches are Devnet-only; buy and sell trading is still being tested.
         </p>
       </section>
 
