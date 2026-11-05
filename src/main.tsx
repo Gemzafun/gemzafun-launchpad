@@ -557,7 +557,7 @@ async function handleLaunchBondingCurve() {
       symbol: launchTokenSymbol.trim().toUpperCase(),
       description: `${launchTokenName.trim()} launched on GEMZA.FUN through Raydium LaunchLab.`,
       image: launchTokenImage,
-      external_url: "https://gemzafun.netlify.app",
+      external_url: "https://gemzafunlaunchpad.netlify.app",
     };
 
     const formData = new FormData();
