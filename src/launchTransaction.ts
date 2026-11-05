@@ -8,7 +8,6 @@ import {
   Raydium,
   TxVersion,
   DEVNET_PROGRAM_ID,
-  DEV_API_URLS,
   LaunchpadConfig,
   LaunchpadPoolInitParam,
   getPdaLaunchpadConfigId,
